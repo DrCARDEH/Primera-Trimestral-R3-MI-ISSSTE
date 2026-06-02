@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estudio R3 · Parcial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{--bg:#F7F5F0;--surface:#FFFFFF;--surface2:#F0EDE6;--border:#E2DDD5;--border2:#C8C2B8;--text:#1A1814;--text2:#6B6560;--text3:#A09A93;--accent:#2C5F8A;--accent-bg:#EAF2F8;--accent-text:#1A3D5C;--green:#2D6A4F;--green-bg:#D8EFDF;--red:#8B2020;--red-bg:#FDEAEA;--amber:#7A4F00;--amber-bg:#FEF3DC;--purple:#4A2C8A;--purple-bg:#EDE8F8;--teal:#1A5C52;--teal-bg:#E0F2EE;--coral:#7A2C1A;--coral-bg:#F8EAE6;--r:10px;--r-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+.app-shell{max-width:740px;margin:0 auto;padding:0 16px 80px}
+.app-header{padding:28px 0 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.app-header-left h1{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--text);line-height:1.2}
+.app-header-left p{font-size:13px;color:var(--text3);margin-top:4px}
+.overall-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 16px;min-width:72px;box-shadow:var(--shadow)}
+.overall-badge .num{font-family:'DM Serif Display',serif;font-size:24px;color:var(--accent);line-height:1}
+.overall-badge .lbl{font-size:10px;color:var(--text3);margin-top:2px;text-align:center}
+.progress-wrap{margin-bottom:20px}
+.progress-header{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:6px}
+.progress-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow)}
+.stat-card .val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1}
+.stat-card .lbl{font-size:11px;color:var(--text3);margin-top:3px}
+.day-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--surface2);border-radius:var(--r);padding:4px}
+.day-tab{flex:1;padding:9px 12px;border:none;border-radius:7px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--text2);cursor:pointer;transition:all 0.18s;text-align:center;line-height:1.3}
+.day-tab.active{background:var(--surface);color:var(--text);font-weight:500;box-shadow:var(--shadow)}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden;transition:border-color 0.15s}
+.topic-card:hover{border-color:var(--border2)}
+.topic-card.is-open{border-color:var(--border2)}
+.topic-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.check-btn{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.18s;color:transparent;font-size:13px}
+.check-btn.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.topic-info{flex:1;min-width:0}
+.topic-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.3}
+.topic-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.topic-badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.b-endo{background:var(--purple-bg);color:var(--purple)}
+.b-cardio{background:var(--coral-bg);color:var(--coral)}
+.b-nefro{background:var(--teal-bg);color:var(--teal)}
+.b-gi{background:var(--amber-bg);color:var(--amber)}
+.topic-chevron{font-size:16px;color:var(--text3);transition:transform 0.2s;flex-shrink:0}
+.topic-card.is-open .topic-chevron{transform:rotate(180deg)}
+.topic-body{padding:0 16px 16px 50px;display:none;border-top:1px solid var(--border)}
+.topic-body.open{display:block}
+.mode-tabs{display:flex;gap:6px;padding-top:14px;margin-bottom:14px;flex-wrap:wrap}
+.mode-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s}
+.mode-btn i{font-size:14px}
+.mode-btn.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);font-weight:500}
+.content-panel{display:none}
+.content-panel.active{display:block}
+.resumen{font-size:13px;color:var(--text2);line-height:1.75}
+.resumen ol{padding-left:1.4rem}
+.resumen li{margin-bottom:6px}
+.fc-wrap{perspective:800px;margin-bottom:8px}
+.fc{position:relative;width:100%;min-height:110px;transform-style:preserve-3d;transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);cursor:pointer}
+.fc.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;min-height:110px;backface-visibility:hidden;border-radius:var(--r);padding:16px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;line-height:1.6}
+.fc-front{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-weight:500}
+.fc-back{background:var(--accent-bg);border:1px solid #B8D4E8;color:var(--accent-text);transform:rotateY(180deg)}
+.fc-tap-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:116px;margin-bottom:10px}
+.fc-nav{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.fc-counter{font-size:12px;color:var(--text3)}
+.nav-btn{display:flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.12s}
+.nav-btn i{font-size:14px}
+.nav-btn:hover{background:var(--surface2)}
+.quiz-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.quiz-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.quiz-q{font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.65;padding:10px 12px;background:var(--surface2);border-radius:var(--r);border-left:3px solid var(--accent)}
+.quiz-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.quiz-opt{padding:9px 13px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);cursor:pointer;text-align:left;transition:all 0.14s;line-height:1.5}
+.quiz-opt:hover:not(:disabled){background:var(--surface2);border-color:var(--border2)}
+.quiz-opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:500}
+.quiz-opt.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.quiz-opt:disabled{cursor:default}
+.quiz-feedback{display:none;font-size:12px;line-height:1.6;color:var(--text2);background:var(--surface2);border-radius:var(--r);padding:10px 12px;border-left:3px solid var(--green)}
+.quiz-feedback.show{display:block}
+.quiz-score{font-size:12px;color:var(--text3);text-align:right;margin-bottom:8px}
+.float-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(247,245,240,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:100}
+.float-bar span{font-size:12px;color:var(--text2)}
+.float-pips{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.pip{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--border2);background:transparent;transition:all 0.2s}
+.pip.done{background:var(--accent);border-color:var(--accent)}
+@media(max-width:480px){.app-header-left h1{font-size:21px}.topic-body{padding-left:16px}.day-tab{font-size:12px;padding:8px 8px}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="app-header">
+    <div class="app-header-left">
+      <h1>Plan de estudio<br><em>Residencia III</em></h1>
+      <p>Parcial · 2 días · 8 h/día · Harrison 22e</p>
+    </div>
+    <div class="overall-badge">
+      <div class="num" id="pct">0%</div>
+      <div class="lbl">completado</div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <span id="prog-label">0 de 10 temas completados</span>
+      <span id="hrs-left">16 h restantes</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="val" id="s-done">0</div><div class="lbl">Completados</div></div>
+    <div class="stat-card"><div class="val" id="s-total">10</div><div class="lbl">Total temas</div></div>
+    <div class="stat-card"><div class="val" id="s-flash">0</div><div class="lbl">Flashcards vistas</div></div>
+  </div>
+  <div class="day-tabs">
+    <button class="day-tab active" onclick="switchDay(0)">Día 1<br><span style="font-size:11px;opacity:.7">Endocrino + Cardio</span></button>
+    <button class="day-tab" onclick="switchDay(1)">Día 2<br><span style="font-size:11px;opacity:.7">Nefro + Digestivo</span></button>
+  </div>
+  <p class="section-label" id="day-label">Día 1 · Endocrino (mañana) · Cardio (tarde)</p>
+  <div id="topics-container"></div>
+</div>
+<div class="float-bar">
+  <span>Progreso global</span>
+  <div class="float-pips" id="pips"></div>
+</div>
+<script>
+const DAYS = [
+ [
+  {id:'hh',title:'Eje hipotálamo-hipófisis',badge:'b-endo',badgeLabel:'Endocrino',meta:'~1.5 h · Cap. 390 · Harrison 22e',
+   resumen:[
+    'La adenohipófisis produce 6 hormonas trópicas: GH, PRL, LH, FSH, TSH y ACTH, todas reguladas por hormonas hipotalámicas liberadoras e inhibidoras.',
+    'El hipotálamo controla la hipófisis a través del sistema porta hipofisario; la dopamina es el principal inhibidor de la prolactina (tono inhibidor constante).',
+    'Panhipopituitarismo: orden de restitución hormonal → cortisol primero (riesgo vital), luego levotiroxina, luego gonadal, GH al final.',
+    'Acromegalia: adenoma somatotrófico → exceso de GH → IGF-1 elevado. Manifestaciones: prognatismo, macroglósia, crecimiento acral, HTA, DM2, síndrome del túnel carpiano.',
+    'Diagnóstico de acromegalia: IGF-1 elevado + GH que NO suprime <1 ng/mL tras sobrecarga oral de glucosa (CTOG). La RM hipofisaria localiza el tumor.',
+    'Tratamiento de acromegalia: cirugía transesfenoidal de primera línea; si persiste: análogos de somatostatina (octreotida, lanreotida) ± cabergolina ± pegvisomant.',
+    'Hiperprolactinemia: causa más frecuente de amenorrea-galactorrea en mujeres en edad fértil. PRL >200 ng/mL orienta a prolactinoma. El efecto de tallo rara vez supera 150 ng/mL.',
+    'Microadenoma hipofisario: <1 cm. Macroadenoma: ≥1 cm. El macroadenoma puede comprimir el quiasma óptico → hemianopsia bitemporal.',
+    'Primera línea para prolactinoma (micro y macro): cabergolina (agonista dopaminérgico). Normaliza PRL y reduce el tamaño en >85% de casos. Cirugía solo si resistencia o intolerancia.',
+    'Síndrome de la silla turca vacía: herniación de aracnoides en la silla turca → imagen de "silla vacía" en RM. Generalmente no requiere tratamiento.',
+    'Apoplejía hipofisaria: hemorragia o infarto dentro de un adenoma → cefalea brusca, oftalmoplejia, hipopituitarismo agudo. Urgencia neuroquirúrgica.',
+    'Craneofaringioma: tumor benigno de la región selar (restos de la bolsa de Rathke). Calcificaciones supraselares en Rx/TC. Más frecuente en niños y adultos jóvenes.'
+   ],
+   flashcards:[
+    {q:'¿Cuál es el orden correcto de restitución hormonal en panhipopituitarismo?',a:'Cortisol primero (crisis vital si no se trata) → tiroxina → hormonas gonadales → GH al final.'},
+    {q:'¿Qué marcador confirma remisión bioquímica en acromegalia y cuál es el valor de corte?',a:'IGF-1 normal para edad/sexo + GH <1 ng/mL en CTOG (algunos criterios modernos <0.4 ng/mL).'},
+    {q:'Primera línea farmacológica en hiperprolactinemia por microadenoma y su mecanismo',a:'Cabergolina: agonista dopaminérgico D2. Suprime la síntesis y secreción de PRL, reduce el tamaño tumoral.'},
+    {q:'¿Cómo diferencias prolactinoma verdadero de "efecto de tallo"?',a:'Efecto de tallo: PRL raramente >150 ng/mL (compresión del tallo interrumpe la dopamina). Prolactinoma: PRL generalmente >200 ng/mL.'},
+    {q:'¿Qué es la apoplejía hipofisaria y cómo se presenta?',a:'Hemorragia/infarto dentro de un adenoma hipofisario. Cefalea explosiva brusca + oftalmoplejia (III par) + hipopituitarismo agudo. Urgencia neuroquirúrgica.'}
+   ],
+   quiz:[
+    {q:'Mujer de 28 años con amenorrea secundaria de 8 meses, galactorrea bilateral y cefalea frontal leve. PRL = 185 ng/mL, TSH normal. RM: nódulo selar de 8 mm sin extensión supraselar. ¿Diagnóstico y tratamiento de primera línea?',
+     opts:['Hipotiroidismo primario → levotiroxina','Microadenoma hipofisario productor de PRL → cabergolina','Macroadenoma no funcionante → cirugía transesfenoidal','Efecto de tallo → observación'],
+     ans:1,fb:'Microprolactinoma: lesión <1 cm + PRL >100 ng/mL + clínica compatible. El hipotiroidismo eleva TRH que estimula PRL, pero TSH es normal. El tratamiento de elección es cabergolina, no cirugía.'},
+    {q:'Hombre de 42 años con prognatismo progresivo, manos y pies grandes, hiperhidrosis y DM2 de reciente diagnóstico. GH basal = 14 ng/mL, IGF-1 = 680 ng/mL (VN <300). Tras CTOG, GH nadir = 3.2 ng/mL. ¿Diagnóstico?',
+     opts:['Gigantismo hipofisario','Acromegalia confirmada','Síndrome de Nelson','Hiperprolactinemia con efecto paracrino'],
+     ans:1,fb:'Acromegalia: IGF-1 elevado + GH que no suprime (<1 ng/mL) tras CTOG. El gigantismo es en niños (antes del cierre epifisario). IGF-1 es el marcador de seguimiento; GH es fluctuante.'},
+    {q:'Paciente con acromegalia tratada con cirugía transesfenoidal. Posoperatorio: IGF-1 persiste en 480 ng/mL. ¿Cuál es el siguiente paso?',
+     opts:['Repetir cirugía de inmediato','Análogo de somatostatina (octreotida o lanreotida)','Radioterapia hipofisaria como única opción','Solo vigilancia con RM anual'],
+     ans:1,fb:'Si la cirugía no logra remisión, el siguiente paso son los análogos de somatostatina. Normalisan GH/IGF-1 en ~55% de los casos. La radioterapia es una tercera línea. Pegvisomant (antagonista de receptor de GH) se usa si hay resistencia a análogos.'},
+    {q:'Hombre de 55 años con cefalea intensa de inicio brusco, ptosis palpebral derecha y diplopía. RM de urgencia: masa selar hemorrágica. ¿Diagnóstico y manejo inmediato?',
+     opts:['Meningitis bacteriana → antibióticos IV','Apoplejía hipofisaria → hidrocortisona IV + evaluación neuroquirúrgica urgente','Aneurisma de la arteria comunicante posterior → embolización','Migraña complicada → analgésicos'],
+     ans:1,fb:'Apoplejía hipofisaria: cefalea explosiva + compromiso de III par (ptosis+diplopía) + masa selar hemorrágica en RM. El riesgo inmediato es la insuficiencia suprarrenal aguda → hidrocortisona IV empírica PRIMERO. Luego decisión neuroquirúrgica.'},
+    {q:'RM cerebral de un adulto sano por cefalea muestra una silla turca con imagen de "cojín de agua" en su interior, sin masa visible. PRL, GH, cortisol y tiroides normales. ¿Diagnóstico?',
+     opts:['Microadenoma no funcionante','Craneofaringioma quístico','Síndrome de la silla turca vacía primaria','Quiste de la bolsa de Rathke'],
+     ans:2,fb:'Silla turca vacía primaria: herniación del espacio subaracnoideo a través del diafragma selar. La hipófisis es normal y funciona bien. No requiere tratamiento si la función es normal. Es un hallazgo incidental frecuente.'}
+   ]
+  },
+  {id:'di',title:'Diabetes insípida y neoplasias hipofisarias',badge:'b-endo',badgeLabel:'Endocrino',meta:'~1 h · Cap. 391 · Harrison 22e',
+   resumen:[
+    'La diabetes insípida (DI) es la incapacidad de concentrar la orina, resultando en poliuria hipotónica (osmolaridad urinaria <300 mOsm/kg) y polidipsia compensatoria.',
+    'DI central: déficit de ADH (vasopresina) por daño del hipotálamo o la neurohipófisis. Causas: tumores (craneofaringioma, metástasis), traumatismo, cirugía hipofisaria, autoinmune, idiopática.',
+    'DI nefrogénica: ADH está presente pero el riñón no responde. Causas: litio (más frecuente en adultos), hipercalcemia, hipokalemia crónica, enfermedad tubular.',
+    'Diagnóstico diferencial de DI central vs. nefrogénica: prueba de privación de agua supervisada → si orina no se concentra → administrar desmopresina: central responde, nefrogénica no.',
+    'Polidipsia primaria (psicogénica): beber compulsivo de agua → dilución del plasma → sodio plasmático bajo o normal. Se diferencia de DI por osmolaridad plasmática baja.',
+    'Tratamiento DI central: desmopresina (análogo de ADH) intranasal, sublingual u oral. Educación sobre riesgo de hiponatremia por sobre-tratamiento.',
+    'Tratamiento DI nefrogénica: tratar causa (suspender litio si posible); tiazidas paradójicamente reducen poliuria; AINEs pueden ayudar.',
+    'Adenomas hipofisarios: los no funcionantes (cromófobos) son los más frecuentes. Presentan síntomas por efecto de masa: hemianopsia bitemporal, hipopituitarismo.',
+    'Clasificación de adenomas funcionantes: somatotrófico (GH, acromegalia), corticotrófico (ACTH, Cushing), tireotrófico (TSH, hipertiroidismo), gonadotrófico (raro), prolactinoma (PRL).',
+    'Todos los adenomas hipofisarios sintomáticos se tratan con cirugía transesfenoidal, EXCEPTO el prolactinoma donde el tratamiento médico con cabergolina es primera línea.',
+    'Craneofaringioma: tumor benigno derivado de restos de la bolsa de Rathke. Calcificaciones en región supraselar en TC. Causa hipopituitarismo, DI y alteraciones visuales.',
+    'Diabetes insípida posoperatoria: complicación frecuente tras cirugía transesfenoidal. Puede seguir patrón trifásico: DI inicial → SIADH → DI permanente.'
+   ],
+   flashcards:[
+    {q:'Diferencia en osmolaridad plasmática entre DI central y polidipsia primaria',a:'DI central: osmolaridad plasmática ALTA (>295 mOsm/kg) con orina hipotónica. Polidipsia primaria: osmolaridad plasmática BAJA o normal por exceso de ingesta hídrica.'},
+    {q:'¿Cuál es la prueba para distinguir DI central de nefrogénica?',a:'Prueba de privación de agua (deshidratación supervisada) seguida de desmopresina. Central: orina se concentra tras desmopresina. Nefrogénica: no se concentra.'},
+    {q:'Tratamiento de primera línea de DI central',a:'Desmopresina (DDAVP): análogo sintético de ADH con mayor duración y sin efecto vasopresor. Disponible intranasal, sublingual u oral.'},
+    {q:'¿Cuál es el adenoma hipofisario que NO se opera de primera intención?',a:'Prolactinoma: primera línea es cabergolina (agonista dopaminérgico). La cirugía se reserva para resistencia, intolerancia o compresión visual aguda.'},
+    {q:'Patrón trifásico de DI postoperatoria tras cirugía hipofisaria',a:'Fase 1: DI (días 1-4, necrosis de axones). Fase 2: SIADH (días 5-7, liberación de ADH almacenada). Fase 3: DI permanente (si >80% de neuronas destruidas).'}
+   ],
+   quiz:[
+    {q:'Hombre de 45 años, post-TEC. Diuresis de 8 L/día, osmolaridad urinaria 75 mOsm/kg, osmolaridad plasmática 310 mOsm/kg, Na+ 152 mEq/L. Tras desmopresina intranasal, osmolaridad urinaria sube a 680 mOsm/kg. ¿Diagnóstico?',
+     opts:['Polidipsia primaria psicogénica','DI nefrogénica por TEC','DI central post-traumática','SIADH con compensación paradójica'],
+     ans:2,fb:'DI central: osmolaridad plasmática alta + orina hipotónica + RESPUESTA a desmopresina (concentra la orina). La polidipsia primaria tendría osmolaridad plasmática baja. La DI nefrogénica no respondería a desmopresina.'},
+    {q:'Mujer de 35 años con diagnóstico de trastorno bipolar en tratamiento con litio desde hace 3 años. Presenta polidipsia y poliuria de 6 L/día. Osmolaridad plasmática 296 mOsm/kg. Tras privación de agua no concentra la orina. Tras desmopresina tampoco concentra. ¿Diagnóstico?',
+     opts:['DI central por efecto del litio sobre hipotálamo','DI nefrogénica inducida por litio','Polidipsia primaria por trastorno bipolar','SIADH paradójico por litio'],
+     ans:1,fb:'Litio es la causa más frecuente de DI nefrogénica adquirida en adultos. Bloquea los receptores V2 en los túbulos colectores → incapacidad de responder a ADH. La orina no se concentra ni con desmopresina (riñón no responde).'},
+    {q:'Paciente de 28 años con cefalea y pérdida visual bitemporal progresiva de 4 meses. RM: masa supraselar con componentes quísticos y calcificaciones. ¿Diagnóstico más probable?',
+     opts:['Macroadenoma hipofisario no funcionante','Craneofaringioma','Meningioma del tubérculo selar','Metástasis supraselar'],
+     ans:1,fb:'Craneofaringioma: tumor benigno supraselar con calcificaciones (hallazgo casi patognomónico en TC), componentes quísticos, más frecuente en adultos jóvenes y niños. El macroadenoma hipofisario rara vez calcifica.'},
+    {q:'Paciente operado de macroadenoma hipofisario vía transesfenoidal. Al día 2 posoperatorio: poliuria de 5 L/día, Na+ 148, orina diluida. Al día 6: oliguria, Na+ 128. ¿Cuál es la explicación fisiopatológica?',
+     opts:['Insuficiencia suprarrenal postoperatoria','Patrón trifásico: DI inicial seguida de SIADH por liberación de ADH almacenada','Fuga de LCR con pérdida de sodio','Recuperación espontánea del eje hipotálamo-hipofisario'],
+     ans:1,fb:'Patrón trifásico clásico postoperatorio: Fase 1 (DI por daño axonal), Fase 2 (SIADH por liberación masiva de ADH almacenada en axones en degeneración), posible Fase 3 (DI permanente). El manejo debe anticipar esta secuencia.'},
+    {q:'Mujer de 22 años psiquiátrica que bebe compulsivamente agua. Na+ 132 mEq/L, osmolaridad plasmática 272 mOsm/kg, osmolaridad urinaria 85 mOsm/kg. ¿Diagnóstico?',
+     opts:['DI central leve','DI nefrogénica','Polidipsia primaria (psicogénica)','SIADH por psicofármacos'],
+     ans:2,fb:'Polidipsia primaria: ingesta compulsiva de agua → dilución del plasma → hiponatremia leve + osmolaridad plasmática BAJA (272 mOsm/kg). En DI, la osmolaridad plasmática estaría alta. SIADH tendría orina concentrada (osmolaridad urinaria >100 con osmolaridad plasmática baja).'}
+   ]
+  },
+  {id:'supra',title:'Suprarrenales: Cushing, Addison e hiperaldosteronismo',badge:'b-endo',badgeLabel:'Endocrino',meta:'~1.5 h · Caps. 395–397 · Harrison 22e',
+   resumen:[
+    'La corteza suprarrenal produce mineralocorticoides (aldosterona, zona glomerulosa), glucocorticoides (cortisol, zona fascicular) y andrógenos (DHEA, zona reticular).',
+    'Insuficiencia suprarrenal primaria (Enfermedad de Addison): destrucción de la corteza → déficit de cortisol Y aldosterona. Causa más frecuente en países desarrollados: autoinmune.',
+    'Clínica de Addison: astenia, hipotensión, hiponatremia, hiperkalemia, hipoglucemia e hiperpigmentación (ACTH elevada estimula melanocitos). Anorexia, náusea, dolor abdominal.',
+    'Insuficiencia suprarrenal secundaria: déficit de ACTH (hipofisaria) → solo déficit de cortisol (aldosterona intacta). Sin hiperpigmentación, sin hiperkalemia. Causa más frecuente: suspensión brusca de glucocorticoides exógenos.',
+    'Crisis adrenal: colapso hemodinámico, vómito, fiebre. Precipitada por estrés (infección, cirugía) en paciente con reserva suprarrenal comprometida. Tratamiento: hidrocortisona 100 mg IV stat.',
+    'Síndrome de Cushing endógeno: causa más frecuente = adenoma hipofisario ACTH-secretor (Enfermedad de Cushing, 70%). También: adenoma suprarrenal, carcinoma suprarrenal, ACTH ectópica (cáncer de pulmón de células pequeñas).',
+    'Clínica de Cushing: obesidad central, cara de luna llena, joroba de búfalo, estrías violáceas anchas, hirsutismo, miopatía proximal, HTA, DM2, osteoporosis, infecciones oportunistas.',
+    'Diagnóstico de Cushing: tamizaje con cortisol libre urinario 24h (×2) o cortisol salival nocturno (×2) o test de supresión con 1 mg de dexametasona nocturna. Confirmación: test de 2 días con 2 mg. Localización: ACTH plasmática.',
+    'Hiperaldosteronismo primario (síndrome de Conn): hipersecreción autónoma de aldosterona → HTA resistente + hipokalemia espontánea + renina suprimida. Causa: adenoma suprarrenal (60%) o hiperplasia bilateral (40%).',
+    'Diagnóstico de Conn: relación aldosterona/ARP >30 (tamizaje). Confirmar con sobrecarga de sal. TC suprarrenal. Cateterismo de venas suprarrenales (CVS) para lateralización antes de cirugía.',
+    'Tratamiento de Conn: adenoma unilateral → adrenalectomía laparoscópica. Hiperplasia bilateral → espironolactona o eplerenona de por vida.',
+    'Feocromocitoma: tumor de la médula suprarrenal (cromafín) → exceso de catecolaminas. Regla de los 10%: 10% bilateral, 10% extra-suprarrenal, 10% maligno. Dx: metanefrinas fraccionadas en orina/plasma.'
+   ],
+   flashcards:[
+    {q:'¿Por qué hay hiperpigmentación en Addison pero NO en insuficiencia suprarrenal secundaria?',a:'En Addison la ACTH es muy alta (estimula melanocitos vía POMC). En secundaria, la ACTH está baja, por eso no hay hiperpigmentación.'},
+    {q:'¿Por qué no hay hiperkalemia en la insuficiencia suprarrenal secundaria?',a:'Porque la aldosterona (mineralocorticoide) es controlada por el sistema renina-angiotensina, NO por ACTH. En insuficiencia secundaria, la aldosterona está intacta.'},
+    {q:'Test de tamizaje inicial para síndrome de Cushing (3 opciones)',a:'(1) Cortisol libre urinario en 24h ×2; (2) Cortisol salival nocturno ×2; (3) Test de supresión con 1 mg de dexametasona nocturna (cortisol matutino <1.8 μg/dL = normal).'},
+    {q:'Tríada de sospecha de hiperaldosteronismo primario',a:'HTA resistente + hipokalemia espontánea (o fácilmente inducible con diuréticos) + aldosterona elevada con ARP suprimida.'},
+    {q:'Tratamiento de la crisis adrenal aguda',a:'Hidrocortisona 100 mg IV en bolo stat, luego 50-100 mg c/6-8h + solución salina al 0.9% (1-2L rápido) + glucosa si hay hipoglucemia. No esperar resultados de laboratorio.'}
+   ],
+   quiz:[
+    {q:'Paciente de 38 años con astenia marcada, hipotensión ortostática, Na+ 124 mEq/L, K+ 6.1 mEq/L, glucosa 58 mg/dL y piel con hiperpigmentación en pliegues y cicatrices. ACTH = 1350 pg/mL. ¿Diagnóstico y tratamiento de urgencia?',
+     opts:['Insuficiencia suprarrenal secundaria → hidrocortisona oral','Enfermedad de Addison → hidrocortisona 100 mg IV stat + solución salina','Síndrome de Cushing ectópico → resección tumoral','Hiperaldosteronismo primario → espironolactona'],
+     ans:1,fb:'Addison con crisis adrenal: ACTH muy elevada + hiperpigmentación + hiponatremia + HIPERKALEMIA (pérdida de mineralocorticoides) + hipoglucemia. Tratamiento inmediato: hidrocortisona IV + SF. La insuficiencia secundaria no cursa con hiperkalemia.'},
+    {q:'Mujer de 42 años con HTA resistente a 3 fármacos, K+ 2.8 mEq/L espontáneo, aldosterona 32 ng/dL, ARP 0.2 ng/mL/h (relación A/ARP = 160). TC suprarrenal: nódulo izquierdo de 1.4 cm. ¿Cuál es el siguiente paso diagnóstico ANTES de operar?',
+     opts:['Operar directamente basándose en el TC','Cateterismo de venas suprarrenales para lateralización','Iniciar espironolactona y evaluar respuesta','RM suprarrenal con gadolinio'],
+     ans:1,fb:'El TC puede mostrar incidentalomas contralaterales falsos. El CVS es el gold standard para confirmar lateralización antes de adrenalectomía. Si hay hipersecreción unilateral confirmada → cirugía. Si es bilateral → espironolactona/eplerenona.'},
+    {q:'Paciente con cara de luna llena, estrías violáceas abdominales de 2 cm, miopatía proximal, DM2 y osteoporosis a los 38 años. Cortisol urinario libre 24h = 380 μg/24h (VN <90). ACTH plasmática = 85 pg/mL (moderadamente elevada). ¿Cuál es la causa más probable?',
+     opts:['Adenoma suprarrenal productor de cortisol','Enfermedad de Cushing (adenoma hipofisario ACTH-secretor)','Síndrome de ACTH ectópica por carcinoma de células pequeñas','Cushing iatrogénico por corticoides exógenos'],
+     ans:1,fb:'ACTH moderadamente elevada (no suprimida) orienta a causa dependiente de ACTH. La causa más frecuente de Cushing ACTH-dependiente es la Enfermedad de Cushing (adenoma hipofisario, 70%). En el síndrome ectópico, la ACTH suele ser muy alta (>200 pg/mL) y el inicio es más abrupto.'},
+    {q:'Hombre de 55 años con HTA grave, cefalea episódica, palpitaciones y diaforesis paroxística. PA 185/110 mmHg en crisis. Metanefrinas urinarias fraccionadas muy elevadas. TC: masa suprarrenal derecha de 4 cm. ¿Diagnóstico y precaución preoperatoria crítica?',
+     opts:['Adenoma suprarrenal productor de cortisol → resección directa','Feocromocitoma → bloqueo alfa-adrenérgico PRIMERO (fenoxibenzamina) antes de cirugía','Carcinoma suprarrenal → resección más quimioterapia','Hiperaldosteronismo primario → espironolactona preoperatoria'],
+     ans:1,fb:'Feocromocitoma: síntomas paroxísticos (cefalea+palpitaciones+diaforesis) + metanefrinas elevadas + masa suprarrenal. NUNCA operar sin bloqueo alfa previo (fenoxibenzamina o doxazosina 10-14 días) para prevenir crisis hipertensiva intraoperatoria por manipulación tumoral.'},
+    {q:'Paciente con sospecha de síndrome de Cushing. Test de supresión con 1 mg de dexametasona nocturna: cortisol matutino = 4.2 μg/dL. ¿Cómo interpretas este resultado y qué sigue?',
+     opts:['Resultado normal (Cushing descartado), no se necesita más estudio','Resultado positivo (no supresión), confirmar con cortisol libre urinario 24h ×2 o test de 2 días con 2 mg','Resultado indeterminado, repetir con 2 mg de dexametasona la misma noche','Proceder directamente a RM hipofisaria'],
+     ans:1,fb:'Corte: <1.8 μg/dL = supresión normal (Cushing improbable). ≥1.8 μg/dL = no supresión = resultado positivo de tamizaje. Se requiere confirmación con una segunda prueba (cortisol urinario ×2 o test de 2 días) antes de estudios de localización (ACTH, RM).'}
+   ]
+  },
+  {id:'gonadas',title:'Gónadas: hipogonadismo, ginecomastia y disfunción eréctil',badge:'b-endo',badgeLabel:'Endocrino',meta:'~0.5 h · Cap. 400 · Harrison 22e',
+   resumen:[
+    'El eje hipotálamo-hipófisis-gonadal: GnRH hipotalámica (pulsátil) → FSH y LH hipofisarias → testosterona/estradiol gonadales + retroalimentación negativa.',
+    'Hipogonadismo primario (hipergonadotrópico): falla gonadal → testosterona baja + FSH/LH ALTAS (respuesta compensatoria). Causas: Klinefelter, orquitis, quimioterapia, criptorquidia.',
+    'Hipogonadismo secundario (hipogonadotrópico): falla hipotálamo-hipofisaria → testosterona baja + FSH/LH BAJAS o inapropiadamente normales. Causas: prolactinoma, Kallmann, anorexia, exceso de ejercicio.',
+    'Síndrome de Klinefelter (47,XXY): causa más frecuente de hipogonadismo primario masculino. Testículos pequeños y firmes, azoospermia, ginecomastia, estatura alta. FSH muy elevada.',
+    'Síndrome de Kallmann: hipogonadismo hipogonadotrópico congénito + anosmia (déficit de GnRH + migración anómala de neuronas olfatorias). Diagnóstico clínico: hipogonadismo + anosmia.',
+    'Ginecomastia: proliferación benigna del tejido glandular mamario masculino. Causas: pubertad (fisiológica), cirrosis (conversión periférica de andrógenos a estrógenos), fármacos (espironolactona, cimetidina, digoxina, antipsicóticos, marihuana, ketoconazol).',
+    'Disfunción eréctil (DE): causa vascular es la más frecuente (aterosclerosis de arterias pudendas). Factores de riesgo: DM, HTA, dislipidemia, tabaquismo, obesidad.',
+    'Evaluación de DE: historia clínica + testosterona total matutina + glucosa + lípidos + TSH. Cuestionario IIEF.',
+    'Tratamiento de DE: modificar factores de riesgo + inhibidores de fosfodiesterasa-5 (sildenafil, tadalafil). Contraindicados con nitratos (hipotensión severa).',
+    'Infertilidad masculina: azoospermia obstructiva (FSH normal) vs. secretora (FSH elevada). Estudio: espermograma completo.',
+    'Hipogonadismo en mujer: insuficiencia ovárica prematura (<40 años) → sofocos, amenorrea, FSH muy elevada. Tratamiento: terapia hormonal sustitutiva.',
+    'Disfunción eréctil como marcador cardiovascular: la DE puede preceder en 2-5 años a un evento cardiovascular mayor. Siempre evaluar riesgo CV.'
+   ],
+   flashcards:[
+    {q:'¿Cómo diferenciar hipogonadismo primario de secundario en laboratorio?',a:'Primario: testosterona baja + FSH/LH ALTAS (falla gonadal, compensación hipofisaria). Secundario: testosterona baja + FSH/LH BAJAS o normales (falla hipotálamo-hipofisaria).'},
+    {q:'Síndrome de Klinefelter: cariotipo, hallazgos clínicos y laboratorio',a:'47,XXY. Testículos pequeños y firmes, azoospermia, ginecomastia, talla alta. FSH y LH muy elevadas (hipogonadismo primario). Dx confirmatorio: cariotipo.'},
+    {q:'Síndrome de Kallmann: qué es y cómo se diferencia de otras causas de hipogonadismo secundario',a:'Hipogonadismo hipogonadotrópico congénito + ANOSMIA (déficit de neuronas GnRH + neuronas olfatorias). Sin anosmia, se llama hipogonadismo hipogonadotrópico idiopático.'},
+    {q:'Tres fármacos de uso común que causan ginecomastia',a:'Espironolactona (bloquea receptor androgénico), cimetidina (bloquea receptor androgénico), digoxina (efecto estrogénico). También: antipsicóticos (elevan PRL), ketoconazol, marihuana.'},
+    {q:'¿Por qué los inhibidores de PDE-5 están contraindicados con nitratos?',a:'Ambos producen vasodilatación vía GMPc. Su combinación causa hipotensión severa potencialmente fatal. Contraindicación absoluta.'}
+   ],
+   quiz:[
+    {q:'Hombre de 25 años infértil. Exploración: talla 188 cm, testículos 4 mL bilaterales (pequeños y firmes), ginecomastia. Laboratorio: FSH 48 UI/L, LH 32 UI/L, testosterona 180 ng/dL. Espermograma: azoospermia. ¿Diagnóstico confirmatorio?',
+     opts:['RM hipofisaria para descartar macroadenoma','Cariotipo (confirma Klinefelter 47,XXY)','Biopsia testicular de urgencia','Prueba de estimulación con HCG'],
+     ans:1,fb:'Klinefelter clásico: testículos pequeños/firmes + azoospermia + ginecomastia + FSH/LH muy elevadas (hipogonadismo primario) + talla alta. El diagnóstico se confirma con cariotipo. La RM hipofisaria es para hipogonadismo hipogonadotrópico (LH/FSH bajas).'},
+    {q:'Joven de 18 años sin desarrollo puberal, sin vello púbico ni axilar. Testículos 3 mL. FSH 1.2 UI/L, LH 0.8 UI/L, testosterona 50 ng/dL. Relata que desde pequeño tiene dificultad para detectar olores. ¿Diagnóstico?',
+     opts:['Síndrome de Klinefelter','Retraso constitucional del desarrollo','Síndrome de Kallmann','Prolactinoma con compresión del eje gonadal'],
+     ans:2,fb:'Síndrome de Kallmann: hipogonadismo hipogonadotrópico (FSH/LH bajas + testosterona baja) + ANOSMIA congénita. Es la combinación característica. El retraso constitucional es un diagnóstico de exclusión y no incluye anosmia.'},
+    {q:'Hombre de 55 años cirrótico (Child-Pugh B). Refiere ginecomastia bilateral dolorosa de 6 meses. No toma fármacos de ningún tipo. Testosterona total: 280 ng/dL. ¿Mecanismo de la ginecomastia?',
+     opts:['Prolactinoma concomitante','Conversión periférica aumentada de andrógenos a estrógenos en el tejido graso y hepático disfuncional','Déficit de receptor androgénico adquirido','Efecto directo del alcohol sobre la hipófisis'],
+     ans:1,fb:'En la cirrosis hay: disminución del metabolismo hepático de estrógenos + aumento de la SHBG que une preferentemente testosterona → reducción de testosterona libre + aumento relativo de estrógenos. Esto causa ginecomastia sin necesidad de fármacos.'},
+    {q:'Diabético de 62 años con DE de 1 año de evolución, sin respuesta a sildenafil 100 mg. Testosterona matutina = 180 ng/dL (baja). ¿Cuál es el paso siguiente más apropiado?',
+     opts:['Cambiar a tadalafil como única medida','Medir LH y FSH para clasificar el hipogonadismo y considerar terapia de reemplazo con testosterona','Derivar directamente a urología para implante de prótesis','Iniciar vardenafil sin más estudios'],
+     ans:1,fb:'Testosterona baja + DE: siempre medir LH/FSH para clasificar (primario vs. secundario) antes de reemplazar. La terapia con testosterona puede mejorar la respuesta a PDE-5i en hipogonadismo. Además, descartar prolactinoma si LH/FSH también están bajas.'},
+    {q:'Mujer de 36 años con amenorrea de 8 meses, sofocos intensos y dispareunia. Embarazos 2, partos 2. FSH = 68 UI/L, estradiol <20 pg/mL. Cariotipo 46,XX. ¿Diagnóstico?',
+     opts:['Menopausia fisiológica','Insuficiencia ovárica prematura (IOP)','Síndrome de Asherman','Hiperprolactinemia con supresión ovárica'],
+     ans:1,fb:'Insuficiencia ovárica prematura: falla ovárica antes de los 40 años + FSH >25 UI/L (dos determinaciones) + amenorrea ≥4 meses. No es menopausia (es <40 años). Causas: autoinmune, iatrogénica (QT/RT), genética (premutación FMR1), idiopática.'}
+   ]
+  },
+  {id:'cardio',title:'Cardiopatías congénitas en adulto y síndromes de preexcitación',badge:'b-cardio',badgeLabel:'Cardio',meta:'~1.5 h · Caps. 256, 280 · Harrison 22e',
+   resumen:[
+    'Coartación de aorta: estenosis congénita de la aorta, generalmente yuxtaductal. HTA en MMSS con hipotensión en MMII, pulsos femorales débiles o ausentes, soplo sistólico interescapular.',
+    'Signo de Roesler: erosiones en el borde inferior de los arcos costales 3°-8° visibles en Rx de tórax, por dilatación de arterias intercostales colaterales.',
+    'Diagnóstico de coartación: ecocardiografía, angioTC o angioRM. Tratamiento: angioplastia con stent (adultos) o resección quirúrgica.',
+    'CIA (comunicación interauricular): cortocircuito izquierda-derecha. Tipo ostium secundum (75%, región de la fosa oval) es el más frecuente. Soplo sistólico en foco pulmonar + desdoblamiento FIJO de S2.',
+    'CIV (comunicación interventricular): soplo holosistólico áspero paraesternal izquierdo bajo. Las pequeñas pueden cerrar espontáneamente. Las grandes causan hipertensión pulmonar (síndrome de Eisenmenger si se invierten).',
+    'Síndrome de Eisenmenger: cortocircuito izquierda-derecha que se invierte por hipertensión pulmonar severa → cortocircuito derecha-izquierda → cianosis central. Contraindicación para cirugía de cierre.',
+    'Tetralogía de Fallot: cuatro componentes: CIV + aorta cabalgante + estenosis pulmonar + hipertrofia de VD. La más frecuente de las cardiopatías congénitas cianóticas. Rx: corazón en "bota".',
+    'Conducto arterioso persistente (CAP): soplo continuo "en maquinaria" infranclavicular izquierdo. En prematuros: indometacina para cierre. En adultos: cierre percutáneo o quirúrgico.',
+    'Síndrome de WPW: vía accesoria auriculoventricular (haz de Kent) que permite conducción anterógrada. ECG: PR corto (<120 ms) + onda delta + QRS ancho.',
+    'WPW + FA: la vía accesoria puede conducir el impulso a frecuencias muy altas (>250 lpm) → riesgo de fibrilación ventricular. CONTRAINDICADOS: adenosina, digital, verapamilo y betabloqueadores (bloquean nodo AV y favorecen conducción exclusiva por vía accesoria).',
+    'Tratamiento agudo de WPW + taquicardia hemodinámica comprometida: cardioversión eléctrica. Estable: procainamida o flecainida IV.',
+    'Tratamiento definitivo de WPW sintomático: ablación con radiofrecuencia (catéter), éxito >95%, prácticamente curativa.'
+   ],
+   flashcards:[
+    {q:'¿Cuál es el hallazgo radiológico patognomónico de la coartación de aorta?',a:'Signo de Roesler: erosiones en el borde inferior de los arcos costales 3°-8° por dilatación de arterias intercostales colaterales. También: signo del "3" en aorta.'},
+    {q:'Tríada ECG del síndrome de WPW y su fisiopatología',a:'PR corto (<120 ms) + onda delta (preexcitación ventricular por vía accesoria) + QRS ancho. La vía accesoria (haz de Kent) conduce más rápido que el nodo AV.'},
+    {q:'¿Por qué están contraindicados adenosina, digital y verapamilo en WPW + FA?',a:'Bloquean el nodo AV → el impulso se conduce exclusivamente por la vía accesoria a frecuencias >300 lpm → FV. El tratamiento es procainamida IV o cardioversión eléctrica.'},
+    {q:'Hallazgo auscultatorio cardinal de la CIA y por qué es fijo',a:'Desdoblamiento FIJO del S2: el shunt izquierda-derecha produce sobrecarga crónica del VD y retraso constante del cierre pulmonar, independientemente de la respiración.'},
+    {q:'¿Qué es el síndrome de Eisenmenger y por qué contraindica la cirugía de cierre?',a:'Inversión del cortocircuito (izquierda-derecha → derecha-izquierda) por hipertensión pulmonar severa. Si se cierra el defecto, el VD no puede superar la resistencia pulmonar → fallo agudo del VD y muerte.'}
+   ],
+   quiz:[
+    {q:'Hombre de 32 años con HTA en brazos (165/105 mmHg), PA en piernas 90/70 mmHg, soplo sistólico interescapular y pulsos femorales débiles. Rx tórax: muesca en borde inferior de arcos costales 4°-7°. ¿Diagnóstico y siguiente paso?',
+     opts:['Disección aórtica tipo A → cirugía de urgencia','Coartación de aorta → angioTC aórtica para planificar intervención','Estenosis aórtica grave → ecocardiografía transtorácica','Insuficiencia aórtica → ecocardiografía'],
+     ans:1,fb:'Coartación de aorta: gradiente de presión MMSS > MMII + soplo interescapular + signo de Roesler. El siguiente paso es angioTC para definir anatomía y planificar angioplastia con stent. La disección aórtica es aguda y dolorosa, sin este patrón crónico.'},
+    {q:'Mujer de 28 años con hallazgo incidental de soplo. ECG: desdoblamiento fijo de S2, soplo sistólico en foco pulmonar. Eco: defecto en región de fosa oval de 18 mm con cortocircuito izquierda-derecha. ¿Diagnóstico y conducta?',
+     opts:['CIV pequeña → observación','CIA tipo ostium secundum → cierre percutáneo con dispositivo (Amplatzer)','CAP → indometacina','Estenosis pulmonar valvular → valvuloplastia'],
+     ans:1,fb:'CIA tipo ostium secundum (75% de las CIA): defecto en la fosa oval + desdoblamiento fijo de S2 + soplo en foco pulmonar. Si hay repercusión hemodinámica (Qp/Qs >1.5:1 o dilatación de cavidades derechas): cierre percutáneo con dispositivo. Cirugía si anatomía no favorable.'},
+    {q:'Joven de 22 años con palpitaciones frecuentes. ECG en ritmo sinusal: PR 90 ms, QRS 130 ms con empastamiento inicial (onda delta). Durante taquicardia: FC 280 lpm, QRS ancho e irregular. ¿Diagnóstico del ritmo y manejo inmediato?',
+     opts:['Flutter auricular → adenosina IV','WPW con FA con conducción anterógrada por vía accesoria → cardioversión eléctrica o procainamida IV','TSVP por reentrada nodal → adenosina IV','Taquicardia ventricular polimórfica → amiodarona IV'],
+     ans:1,fb:'WPW + FA con conducción anterógrada: FC altísima (>250 lpm) + QRS ancho irregular (diagnóstico diferencial con TV). La adenosina y digoxina están CONTRAINDICADOS → FV. Si estable: procainamida IV. Si inestable: cardioversión eléctrica inmediata. Tratamiento definitivo: ablación.'},
+    {q:'Paciente de 35 años con tetralogía de Fallot reparada a los 3 años. Ahora con disnea, síncope y soplo de insuficiencia pulmonar grave. Eco: VD severamente dilatado. ¿Complicación tardía y manejo?',
+     opts:['Endocarditis infecciosa → antibióticos','Insuficiencia pulmonar grave post-reparación → sustitución valvular pulmonar','Hipertensión pulmonar → sildenafil','Re-estenosis pulmonar → valvuloplastia con balón'],
+     ans:1,fb:'Complicación más frecuente a largo plazo de la reparación de tetralogía de Fallot: insuficiencia pulmonar grave por parche transanular → sobrecarga crónica de VD → dilatación y disfunción → síncope/muerte súbita. Tratamiento: reemplazo de válvula pulmonar (biológica o pulmonar homóloga).'},
+    {q:'Hombre de 45 años con síndrome de WPW conocido, asintomático hasta ahora. En estudio electrofisiológico: periodo refractario efectivo de la vía accesoria de 210 ms. ¿Cuál es la conducta más apropiada?',
+     opts:['Observación sin tratamiento por ser asintomático','Ablación con radiofrecuencia profiláctica (PRE <250 ms indica alto riesgo)','Amiodarona profiláctica de por vida','Marcapasos bicameral preventivo'],
+     ans:1,fb:'PRE de la vía accesoria <250 ms indica que puede conducir a frecuencias >250 lpm si hay FA → riesgo de FV y muerte súbita. Aunque sea asintomático, el riesgo justifica ablación profiláctica, especialmente en adultos jóvenes activos o con profesiones de riesgo.'}
+   ]
+  },
+  {id:'peri',title:'Pericarditis, miocarditis y taponamiento cardiaco',badge:'b-cardio',badgeLabel:'Cardio',meta:'~1 h · Caps. 268, 281 · Harrison 22e',
+   resumen:[
+    'Pericarditis aguda: inflamación del pericardio. Causa más frecuente: viral (Coxsackie B, echovirus, adenovirus). También: autoinmune, tuberculosa, urémica, post-IAM.',
+    'Clínica de pericarditis: dolor torácico pleurítico que empeora en decúbito y MEJORA al inclinarse hacia adelante. Roce pericárdico (trifásico: sístole + diástole auricular + llenado ventricular rápido).',
+    'ECG en pericarditis: supradesnivel difuso del ST en "silla de montar" (cóncavo hacia arriba) en múltiples derivaciones + descenso del intervalo PR. Diferencia del IAM: no recíproco, no en V1.',
+    'Tratamiento de pericarditis viral: AINEs (ibuprofeno 600 mg c/8h) + colchicina (reduce recurrencias). Reposo relativo. Corticoides solo si hay contraindicación a AINEs (aumentan riesgo de cronicidad).',
+    'Pericarditis constrictiva: fibrosis y calcificación del pericardio → restricción al llenado. Clínica: IC derecha (ingurgitación yugular, hepatomegalia, ascitis) con pulmones limpios. Signo de Kussmaul.',
+    'Taponamiento cardiaco: acumulación de líquido pericárdico que aumenta la presión intrapericárdica → colapso de cavidades derechas → obstrucción al llenado → choque obstructivo.',
+    'Tríada de Beck del taponamiento: hipotensión + ruidos cardiacos apagados + ingurgitación yugular. Pulso paradójico >10 mmHg (caída de PAS durante inspiración).',
+    'Diagnóstico de taponamiento: ecocardiografía (colapso de aurícula y ventrículo derechos en diástole). El taponamiento es clínico-ecocardiográfico, no radiológico.',
+    'Tratamiento del taponamiento: pericardiocentesis urgente (guiada por eco). Diuréticos CONTRAINDICADOS (reducen precarga y empeoran el choque). NO dar vasodilatadores.',
+    'Miocarditis: inflamación del miocardio. Causas: viral (Coxsackie B más frecuente), autoinmune, farmacológica (ciclofosfamida, antracíclicos), enfermedad de Chagas.',
+    'Clínica de miocarditis: disnea, dolor torácico, fiebre, palpitaciones. Troponina elevada. ECG: cambios inespecíficos del ST. Eco: disfunción sistólica global.',
+    'Diagnóstico de miocarditis: RM cardiaca con gadolinio (gold standard clínico): realce tardío en zona MEDIA del miocardio (a diferencia del IAM: subendocárdico). Biopsia endomiocárdica en casos graves o refractarios.'
+   ],
+   flashcards:[
+    {q:'¿Cuál es la posición que alivia el dolor de la pericarditis aguda y por qué?',a:'Sentado e inclinado hacia adelante (30-45°): reduce el contacto entre el pericardio inflamado y la pleura parietal posterior, disminuyendo el dolor pleurítico.'},
+    {q:'Diferencia ECG entre pericarditis aguda e IAM anterolateral',a:'Pericarditis: supradesnivel DIFUSO (múltiples derivaciones), ST cóncavo (silla de montar), descenso de PR, sin cambios recíprocos. IAM: supradesnivel focal, ST convexo, ondas Q, cambios recíprocos.'},
+    {q:'Tríada de Beck y pulso paradójico en el taponamiento',a:'Tríada de Beck: hipotensión + ruidos apagados + ingurgitación yugular. Pulso paradójico: caída de PAS >10 mmHg en inspiración (el VD comprimido desplaza el septo hacia el VI).'},
+    {q:'¿Por qué están contraindicados los diuréticos en el taponamiento cardiaco?',a:'El taponamiento es un choque obstructivo que depende de precarga. Los diuréticos reducen el retorno venoso → empeoran el llenado cardiaco → agravamiento del shock. El tratamiento es pericardiocentesis.'},
+    {q:'Gold standard diagnóstico de miocarditis y su hallazgo característico',a:'RM cardiaca con gadolinio: realce tardío en la zona MEDIA del miocardio (no subendocárdico como el IAM, no subepicárdico como la pericarditis). Puede mostrar edema miocárdico con T2-STIR.'}
+   ],
+   quiz:[
+    {q:'Hombre de 28 años con dolor torácico brusco que empeora en decúbito y mejora al sentarse. Fiebre 38.2°C, FC 95 lpm. ECG: supradesnivel del ST cóncavo en DI, DII, aVF, V3-V6 + descenso del PR. Troponina levemente elevada (0.08 ng/mL). ¿Diagnóstico y tratamiento?',
+     opts:['IAM con elevación del ST → activar código infarto + angioplastia primaria','Pericarditis aguda viral → ibuprofeno 600 mg c/8h + colchicina','Miocarditis aguda → inmunosupresión inmediata','Disección aórtica → angioTC de urgencia'],
+     ans:1,fb:'Pericarditis aguda: dolor pleurítico + fiebre + ECG difuso cóncavo + descenso de PR. La troponina puede elevarse levemente por miopericarditis. El tratamiento es AINEs + colchicina. El IAM tiene ST focal, convexo, cambios recíprocos y no mejora con la posición.'},
+    {q:'Paciente tratada por pericarditis viral hace 3 semanas. Regresa con disnea progresiva de 5 días, PAS 78 mmHg, PAS en inspiración 58 mmHg, ingurgitación yugular, ruidos cardiacos apagados. Eco: efusión circunferencial con colapso de AD en diástole. ¿Paso inmediato?',
+     opts:['Furosemida IV 80 mg para reducir la congestión','Pericardiocentesis ecoguiada de urgencia','Metilprednisolona IV para pericarditis recurrente','Noradrenalina para mantener la presión arterial como única medida'],
+     ans:1,fb:'Taponamiento cardiaco: tríada de Beck + pulso paradójico marcado (38 mmHg) + colapso de AD en eco. Es una emergencia. Pericardiocentesis inmediata. Los diuréticos están CONTRAINDICADOS. La noradrenalina puede usarse como puente, pero el tratamiento definitivo es el drenaje.'},
+    {q:'Mujer de 35 años con antecedente de pericarditis tuberculosa hace 2 años. Ahora con ingurgitación yugular severa, hepatomegalia pulsátil, ascitis, edema en MMII y pulmones LIMPIOS en auscultación. Eco: pericardio engrosado y calcificado, disfunción diastólica restrictiva. ¿Diagnóstico?',
+     opts:['Insuficiencia cardiaca congestiva por miocardiopatía dilatada','Pericarditis constrictiva crónica','Taponamiento cardiaco subagudo','Cirrosis hepática con hipertensión portal'],
+     ans:1,fb:'Pericarditis constrictiva: IC derecha (IY + hepatomegalia + ascitis) con pulmones LIMPIOS (diferencia de IC izquierda). Pericardio calcificado en eco/TC. Signo de Kussmaul (IY que aumenta en inspiración). Tratamiento: pericardiectomía quirúrgica.'},
+    {q:'Joven de 24 años deportista con dolor torácico, disnea y palpitaciones 2 semanas después de un síndrome gripal. Troponina I = 2.8 ng/mL, ECG: bloqueo AV de primer grado, alteraciones difusas del ST. Eco: FE 35%, sin derrame. ¿Gold standard diagnóstico?',
+     opts:['Biopsia endomiocárdica inmediata','RM cardiaca con gadolinio (realce tardío en zona media del miocardio)','Angiografía coronaria para descartar IAM','PET cardiaco con FDG'],
+     ans:1,fb:'Miocarditis aguda: post-viral + troponina elevada + disfunción sistólica + bloqueo AV. La RM cardiaca es el gold standard CLÍNICO: realce tardío en zona media (intramural), edema en T2-STIR. La biopsia endomiocárdica es gold standard histológico pero solo en casos refractarios o necesidad de diagnóstico etiológico urgente.'},
+    {q:'Paciente masculino de 45 años con pericarditis aguda viral. Se le prescribe ibuprofeno 600 mg c/8h. ¿Qué medicamento se debe agregar siempre y cuál es su beneficio?',
+     opts:['Prednisona 1 mg/kg para reducir inflamación más rápido','Colchicina 0.5 mg c/12h por 3 meses para reducir el riesgo de recurrencia','Warfarina para prevenir trombosis pericárdica','Amiodarona profiláctica por riesgo de arritmias'],
+     ans:1,fb:'Colchicina (0.5 mg c/12h, 3 meses en primer episodio) reduce el riesgo de recurrencia de pericarditis del 30% al 10-15% (estudio COPE). Es el estándar de cuidado junto con AINEs. Los corticoides AUMENTAN el riesgo de cronicidad y recurrencia (se usan solo si contraindicación a AINEs).'}
+   ]
+  }
+ ],
+ [
+  {id:'poli',title:'Poliquistosis renal y litiasis renoureteral',badge:'b-nefro',badgeLabel:'Nefro',meta:'~1.5 h · Caps. 327, 330 · Harrison 22e',
+   resumen:[
+    'PQRAD (poliquistosis renal autosómica dominante): mutación en PKD1 (85%, cromosoma 16, codifica policistina-1) o PKD2 (15%, cromosoma 4, policistina-2). PKD1 tiene evolución más rápida a IRCT.',
+    'Fisiopatología: las policistinas forman un complejo en el cilio primario que regula el calcio intracelular. Su disfunción → proliferación celular anormal → formación de quistes en todas las nefronas.',
+    'Clínica de PQRAD: masa abdominal bilateral palpable, dolor lumbar crónico, hematuria (por rotura de quiste o litiasis), HTA (compresión de arteriolas → activación SRAA), ITUs recurrentes, IRC progresiva.',
+    'Manifestaciones extrarenales de PQRAD: aneurismas intracraneales (10%), quistes hepáticos (80%, no afectan función), quistes pancreáticos y espénicos, prolapso de válvula mitral, hernia inguinal.',
+    'Tamizaje de aneurismas intracraneales: RM cerebral en pacientes con historia personal o familiar de hemorragia subaracnoidea o profesión de alto riesgo. NO en todos los pacientes.',
+    'Diagnóstico de PQRAD: ecocardiografía renal (criterios de Ravine por edad). Genético si hay duda diagnóstica o donante renal vivo.',
+    'Tolvaptán: antagonista del receptor V2 de ADH → inhibe el AMP cíclico que promueve la proliferación quística. Enlentece la progresión en PQRAD con TFG >25 mL/min y crecimiento renal rápido. Riesgo de hepatotoxicidad.',
+    'Litiasis renal: composición más frecuente: oxalato de calcio (75%), seguido de fosfato de calcio, ácido úrico (radiolúcido en Rx), estruvita y cistina.',
+    'Cólico nefrítico: dolor lumbar unilateral intenso, irradiado a ingle y genitales, náusea, inquietud. Hematuria macroscópica o microscópica en 85%. Puede haber fiebre si hay obstrucción + infección (urgencia).',
+    'Diagnóstico de litiasis aguda: TC abdominopélvica sin contraste (gold standard, sensibilidad 98%). La Rx simple muestra solo cálculos radiopacos. Eco renal: hidronefrosissin ver el cálculo ureteral.',
+    'Tratamiento del cólico nefrítico: AINEs (ketorolaco IV, primera línea por su efecto antiinflamatorio sobre el uréter) + opiáceos si dolor intenso. Hidratación. Tamsulosina (alfa-bloqueante) para facilitar la expulsión.',
+    'Indicaciones de intervención urgente en litiasis: obstrucción + infección (urosepsis), anuria, dolor refractario, cálculo >10 mm (baja probabilidad de expulsión espontánea).'
+   ],
+   flashcards:[
+    {q:'Gen más frecuente en PQRAD, su cromosoma y producto proteico',a:'PKD1, cromosoma 16, codifica policistina-1 (proteína del cilio primario). Presente en 85% de casos. Evolución más agresiva que PKD2 (cromosoma 4, policistina-2).'},
+    {q:'Complicación extrarrenal más grave de PQRAD y criterios para tamizaje con RM',a:'Aneurismas intracraneales (10%). Tamizaje con RM cerebral: solo si historia familiar/personal de HSA o profesión de alto riesgo (piloto, buzo). NO en todos los pacientes.'},
+    {q:'¿Cuál cálculo renal es RADIOLÚCIDO en Rx simple y en qué contextos se forma?',a:'Cálculo de ácido úrico: radiolúcido (no se ve en Rx, sí en TC). Contextos: hiperuricemia, orina persistentemente ácida (pH <5.5), gota, síndrome metabólico, dieta rica en purinas.'},
+    {q:'Tratamiento farmacológico de primera línea del cólico nefrítico agudo',a:'AINEs IV (ketorolaco): inhiben las prostaglandinas que mantienen la presión ureteral y la musculatura lisa espástica. + Tamsulosina para facilitar expulsión de cálculos <10 mm.'},
+    {q:'¿Cuándo se indica intervención URGENTE en litiasis ureteral?',a:'Obstrucción + fiebre/infección (urosepsis = emergencia urológica), anuria bilateral, riñón único obstruido, dolor refractario a analgésicos, cálculo >10 mm (baja expulsión espontánea).'}
+   ],
+   quiz:[
+    {q:'Hombre de 44 años con antecedente familiar de PQRAD (padre e hijo en diálisis). Quistes renales bilaterales múltiples, HTA de difícil control, Cr 1.9 mg/dL (TFG 42 mL/min). Eco cerebral: sin aneurismas. RM renal: volumen renal total 1850 mL. ¿Cuál es la intervención específica para retrasar la progresión?',
+     opts:['ARA-II como única medida','Tolvaptán (criterios: TFG >25 + crecimiento renal rápido)','Diálisis peritoneal profiláctica','Nefrectomía bilateral profiláctica'],
+     ans:1,fb:'Tolvaptán está indicado en PQRAD con TFG >25 mL/min y evidencia de progresión rápida (volumen renal total >750 mL o crecimiento >5% anual). El control estricto de la HTA (objetivo <130/80) también enlentece la progresión. Monitorizar enzimas hepáticas por hepatotoxicidad.'},
+    {q:'Mujer de 38 años con dolor lumbar derecho agudo, náusea, hematuria macroscópica. TC sin contraste: cálculo de 4 mm en uréter distal derecho, sin dilatación significativa. Sin fiebre. ¿Conducta más apropiada?',
+     opts:['Litotricia extracorpórea por ondas de choque inmediata','Manejo conservador: AINEs + tamsulosina + hidratación + seguimiento (90% expulsión espontánea <4 mm)','Ureteroscopía de urgencia','Nefrolitotomía percutánea'],
+     ans:1,fb:'Cálculo <5 mm en uréter distal: probabilidad de expulsión espontánea >90%. Manejo ambulatorio con analgesia + tamsulosina + filtrar orina para recuperar el cálculo y analizar su composición. La intervención se reserva para fracaso de tratamiento conservador, obstrucción o infección.'},
+    {q:'Hombre de 50 años con historia de ITUs a repetición, fiebre y dolor lumbar bilateral. Rx simple: imágenes opacas ramificadas que ocupan los sistemas colectores de ambos riñones. Urocultivo: Klebsiella pneumoniae. ¿Tipo de cálculo y mecanismo?',
+     opts:['Oxalato de calcio por hipercalciuria absortiva','Estruvita por bacteria productora de ureasa que alcaliniza la orina','Ácido úrico por hiperuricemia crónica','Cistina por cistinuria hereditaria'],
+     ans:1,fb:'Cálculo coraliforme de estruvita: bacterias ureasa+ (Klebsiella, Proteus, Pseudomonas) desdoblan la urea → amoniaco → pH urinario muy alcalino → precipita fosfato amónico magnésico (estruvita). Tratamiento: urología (nefrolitotomía percutánea) + antibiótico prolongado.'},
+    {q:'Paciente con cólico nefrítico y TC que muestra cálculo ureteral de 9 mm + fiebre 39.5°C + escalofríos + hipotensión 90/60 mmHg. ¿Diagnóstico y manejo?',
+     opts:['Hospitalizar, analgesia IV y esperar expulsión espontánea','Urosepsis por obstrucción: drenaje urgente (nefrostomía percutánea o catéter ureteral doble J) + antibióticos IV','Litotricia extracorpórea de urgencia','Alta con antibiótico oral y seguimiento ambulatorio en 1 semana'],
+     ans:1,fb:'Obstrucción ureteral + infección = EMERGENCIA UROLÓGICA. La orina infectada proximal a la obstrucción puede causar urosepsis fulminante. Tratamiento: drenaje URGENTE (nefrostomía o doble J) + antibióticos IV (piperacilina-tazobactam o carbapenem). La litotricia está contraindicada en infección activa.'},
+    {q:'Mujer de 28 años con cálculos renales recurrentes desde los 18 años. Análisis de cálculo expulsado: cistina. Na+ 138, K+ 4.1, Ca++ 9.8 (normal), ácido úrico normal. Orina 24h: cistina 450 mg (VN <250 mg/día). ¿Diagnóstico y tratamiento específico?',
+     opts:['Hipercalciuria: tiazidas','Cistinuria: hidratación abundante + alcalinización urinaria (pH >7) + D-penicilamina o tiopronina si falla','Hiperuricosuria: alopurinol','Hiperoxaluria primaria: piridoxina'],
+     ans:1,fb:'Cistinuria: trastorno autosómico recesivo del transporte de cistina y aminoácidos dibásicos en el riñón. Tratamiento: hidratación >3L/día + alcalinización (bicarbonato, citrato) para mantener pH urinario >7 (cistina es más soluble en orina alcalina). Si falla: D-penicilamina o tiopronina (forman complejos solubles con cistina).'}
+   ]
+  },
+  {id:'onco',title:'Neoplasias renales, vesicales y prostáticas',badge:'b-nefro',badgeLabel:'Nefro',meta:'~1.5 h · Caps. 90–92 · Harrison 22e',
+   resumen:[
+    'Carcinoma renal de células claras (CRCC): tumor más frecuente del riñón (75%). Origen: epitelio tubular proximal. FR: tabaquismo, obesidad, HTA, enfermedad de Von Hippel-Lindau (VHL).',
+    'Tríada clásica del CRCC: hematuria + dolor en flanco + masa palpable. Solo en 10% de los casos. La mayoría son incidentales en imagen.',
+    'Síndromes paraneoplásicos del CRCC: eritrocitosis (EPO ectópica), hipercalcemia (PTHrP), HTA (renina ectópica), síndrome de Stauffer (disfunción hepática no metastásica), poliglobulia.',
+    'Diagnóstico de CRCC: TC con contraste (masa que realza). Biopsia si hay duda diagnóstica. Estadificación: TC tórax-abdomen-pelvis. PET no es estándar.',
+    'Tratamiento de CRCC localizado: nefrectomía parcial (si posible) o radical. CRCC metastásico: inhibidores de tirosina quinasa (sunitinib, pazopanib) o anti-PD-1/PD-L1 (nivolumab + ipilimumab).',
+    'Cáncer de vejiga (CV): 90% carcinoma urotelial (transicional). Localización: vejiga (90%), pelvis renal, uréter, uretra. FR principal: TABAQUISMO (×4 riesgo, 50% de los casos).',
+    'Otros FR del CV: anilinas aromáticas (tintoreros, pintores), ciclofosfamida (cistitis hemorrágica → CV), esquistosomiasis (carcinoma escamoso en países endémicos), fenacetina.',
+    'Diagnóstico de CV: cistoscopia + biopsia (gold standard). Citología urinaria (alta especificidad para tumores de alto grado). TC urografía para vías urinarias superiores.',
+    'Estadificación de CV: Ta-T1 (superficial) → resección transuretral (RTU) ± BCG intravesical. T2-T4 (músculo invasor) → cistectomía radical ± quimioterapia neoadyuvante (MVAC o gemcitabina-cisplatino).',
+    'Cáncer de próstata (CP): más frecuente en hombres >50 años. FR: edad, raza afroamericana, historia familiar. Adenocarcinoma en zona periférica (80%) → detectable por TR.',
+    'Tamizaje de CP: APE + tacto rectal anual desde los 50 años (45 años con FR). APE >4 ng/mL o TR sospechoso → biopsia transrectal ecoguiada (10-12 muestras).',
+    'Clasificación de Gleason: suma de los 2 patrones más frecuentes (1-5 cada uno). Gleason 6 = bajo riesgo, vigilancia activa. Gleason 7 = riesgo intermedio. Gleason 8-10 = alto riesgo, tratamiento agresivo. CP metastásico: blanco son los huesos (osteoblásticas).'
+   ],
+   flashcards:[
+    {q:'Factor de riesgo más importante del carcinoma urotelial de vejiga y porcentaje atribuible',a:'Tabaquismo: responsable del 50% de los casos, aumenta el riesgo ×4. Los carcinógenos de la orina (aminas aromáticas del humo) contactan directamente la mucosa vesical.'},
+    {q:'Síndromes paraneoplásicos más frecuentes del carcinoma renal de células claras',a:'Eritrocitosis (EPO ectópica), hipercalcemia (PTHrP), HTA (renina ectópica), síndrome de Stauffer (hepatomegalia disfuncional sin metástasis). Desaparecen con nefrectomía.'},
+    {q:'¿Cuál es la diferencia en estadificación de cáncer de vejiga superficial vs. músculo-invasor?',a:'Superficial (Ta, T1, Tis): resección transuretral (RTU) ± BCG intravesical. Músculo-invasor (≥T2): cistectomía radical + quimioterapia neoadyuvante basada en platino.'},
+    {q:'¿Qué patrón de metástasis óseas produce el cáncer de próstata y cómo se diferencia del mieloma?',a:'CP: metástasis OSTEOBLÁSTICAS (blásticas, escleróticas en imagen, fosfatasa alcalina elevada). Mieloma: metástasis OSTEOLÍTICAS (líticas, calcio elevado, FA normal). CP: APE elevado.'},
+    {q:'¿Qué significa Gleason 4+3=7 y cómo difiere de Gleason 3+4=7 en términos de pronóstico?',a:'El primer número es el patrón predominante. Gleason 4+3=7 tiene PEOR pronóstico que 3+4=7 porque el patrón 4 (más agresivo) predomina sobre el 3. Mismo suma, diferente biología.'}
+   ],
+   quiz:[
+    {q:'Hombre de 58 años, fumador de 30 paquetes/año, sin síntomas. Eco abdominal de rutina: masa renal derecha de 4 cm heterogénea. TC con contraste: realce de la masa en fase arterial. Sin metástasis. ¿Diagnóstico probable y manejo?',
+     opts:['Angiomiolipoma → observación si <4 cm','Carcinoma renal de células claras → nefrectomía parcial o radical','Oncocitoma → biopsia y vigilancia','Quiste renal complejo Bosniak II → seguimiento cada 6 meses'],
+     ans:1,fb:'Masa renal sólida que realza con contraste en TC → carcinoma renal hasta demostrar lo contrario. Tratamiento estándar: nefrectomía parcial (preserva nefronas) si técnicamente posible. La biopsia preoperatoria no es rutinaria. Angiomiolipoma tiene grasa macroscópica (-10 UH en TC).'},
+    {q:'Hombre de 68 años, fumador, con hematuria macroscópica indolora en 3 ocasiones en 2 meses. TC urografía: no se detecta masa vesical. Citología urinaria: células uroteliales atípicas. ¿Mejor siguiente paso?',
+     opts:['Repetir citología en 3 meses','Cistoscopia con biopsia (gold standard para cáncer de vejiga)','Urocultivo y antibiótico empírico','RMN de vejiga con gadolinio'],
+     ans:1,fb:'Hematuria macroscópica indolora en varón fumador = cáncer de vejiga hasta demostrar lo contrario. El TC puede no ver tumores planos (carcinoma in situ). La cistoscopia es el gold standard: permite visualización directa y biopsia. La citología positiva refuerza la sospecha pero no reemplaza la cistoscopia.'},
+    {q:'Mujer de 45 años con historia de lupus, tratada con ciclofosfamida acumulada 30 g durante 3 años. Ahora con hematuria microscópica persistente y disuria. ¿Cuál es la complicación más probable y cómo se diagnostica?',
+     opts:['Cistitis lúpica → corticoides','Cáncer de vejiga inducido por ciclofosfamida → cistoscopia + biopsia','Cistitis intersticial → urodinámica','Nefritis lúpica → biopsia renal'],
+     ans:1,fb:'La ciclofosfamida es un carcinógeno urothelial demostrado: su metabolito acroleína irrita y daña la mucosa vesical → cistitis hemorrágica crónica → cáncer de vejiga (riesgo ×9). Se debe realizar cistoscopia de vigilancia. La profilaxis es con mesna (neutraliza acroleína).'},
+    {q:'Hombre de 72 años con APE 18 ng/mL, tacto rectal con nódulo duro en lóbulo derecho. Biopsia: adenocarcinoma Gleason 4+5=9, afectación de 8/12 cilindros. Gammagrafía ósea: múltiples lesiones blásticas en columna y pelvis. ¿Tratamiento de primera línea?',
+     opts:['Prostatectomía radical como único tratamiento','Deprivación androgénica (análogos LHRH) + abiraterona o enzalutamida (tratamiento combinado)','Radioterapia exclusiva de columna','Docetaxel como primera línea sin deprivación hormonal'],
+     ans:1,fb:'CP metastásico sensible a castración: la combinación de deprivación androgénica (análogos LHRH o castración quirúrgica) + abiraterona (inhibe síntesis de andrógenos) o enzalutamida (bloquea receptor androgénico) prolonga la supervivencia global vs. deprivación sola (estudios LATITUDE, ARCHES). La prostatectomía no tiene rol en enfermedad metastásica.'},
+    {q:'Hombre de 65 años con APE de 5.8 ng/mL. Biopsia: adenocarcinoma Gleason 3+3=6, afectación de 2/12 cilindros, APE 5.8. TR normal. Sin extensión extraprostática. ¿Cuál es la opción más apropiada para este paciente?',
+     opts:['Prostatectomía radical inmediata','Deprivación androgénica inmediata','Vigilancia activa (APE cada 3-6 meses, biopsia anual)','Radioterapia externa inmediata'],
+     ans:2,fb:'Gleason 6 = cáncer de próstata de muy bajo riesgo. La vigilancia activa (no espera vigilante pasiva) es el estándar: APE c/3-6 meses, TR anual, biopsia 12-18 meses. Evita sobretratamiento en tumores indolentes. La prostatectomía y radioterapia tienen morbilidad significativa (incontinencia, disfunción eréctil) sin beneficio demostrado en bajo riesgo.'}
+   ]
+  },
+  {id:'eii',title:'EII: Crohn, colitis ulcerosa y colitis microscópica',badge:'b-gi',badgeLabel:'Digestivo',meta:'~1.5 h · Cap. 338 + Cap. 139 · Harrison 22e',
+   resumen:[
+    'La EII incluye la enfermedad de Crohn (EC) y la colitis ulcerosa (CU), ambas con activación inmune anormal ante la flora intestinal en sujetos genéticamente susceptibles.',
+    'Colitis ulcerosa (CU): inflamación continua desde el recto hacia proximal, limitada estrictamente a la mucosa. Nunca afecta el intestino delgado. Extensión: proctitis (E1), colitis izquierda (E2), pancolitis (E3).',
+    'Clínica de CU: diarrea con sangre y moco, tenesmo, urgencia defecatoria, cólico. En brotes graves: fiebre, taquicardia, anemia, hipoalbuminemia.',
+    'Enfermedad de Crohn (EC): inflamación transmural (todas las capas), discontinua (skip lesions), puede afectar cualquier segmento desde boca hasta ano. Más frecuente: íleon terminal.',
+    'Características histológicas de Crohn: granulomas no caseosos (30-60% de biopsias), fisuras, fístulas, patrón en empedrado endoscópico, ulceraciones aftosas.',
+    'Diferencias clave EC vs. CU: EC = transmural + discontinua + granulomas + fístulas + perianal + íleon. CU = mucosa + continua + desde recto + sin granulomas. Solo CU cura con colectomía.',
+    'Megacolon tóxico: complicación grave de CU (y EC). Dilatación del colon transverso >6 cm + toxicidad sistémica. Manejo: hospitalización + corticoides IV + descomprimir + cirugía si no mejora en 48-72h.',
+    'Manifestaciones extraintestinales de EII: artritis periférica (paralela a actividad), espondilitis anquilosante (independiente), eritema nodoso, pioderma gangrenoso, uveítis, colangitis esclerosante primaria (más en CU).',
+    'Tratamiento de CU: mesalazina (5-ASA) para inducción y mantenimiento en enfermedad leve-moderada. Corticoides para brotes. Biológicos (anti-TNF: infliximab, adalimumab; vedolizumab; ustekinumab) para enfermedad moderada-grave.',
+    'Colitis pseudomembranosa: infección por Clostridioides difficile. Factores de riesgo: antibióticos (especialmente clindamicina, cefalosporinas, fluoroquinolonas), hospitalización, edad >65, IBP.',
+    'Diagnóstico de C. difficile: toxina A y B en heces (inmunoensayo enzimático) o PCR de toxinas (más sensible). Colonoscopia (pseudomembranas amarillas) no es rutinaria.',
+    'Colitis microscópica: diarrea acuosa crónica (>3 deposiciones/día) sin sangre, colonoscopia NORMAL. Diagnóstico SOLO por biopsia: colágena (banda de colágeno >10 μm) o linfocítica (>20 LIE/100 células epiteliales). Más en mujeres >50 años, asociada a AINEs, IBP, ISRS.'
+   ],
+   flashcards:[
+    {q:'Tres diferencias histológicas/endoscópicas clave entre Crohn y colitis ulcerosa',a:'Crohn: granulomas no caseosos + skip lesions (discontinuo) + fisuras/fístulas. CU: inflamación continua desde recto + solo mucosa + sin granulomas + pseudopólipos inflamatorios.'},
+    {q:'¿En cuál EII la colectomía total es CURATIVA y por qué?',a:'Colitis ulcerosa: solo afecta el colon y es continua desde el recto. Al resecar todo el colon, se elimina el órgano diana. En Crohn, puede afectar cualquier segmento residual y recidivar.'},
+    {q:'Factores de riesgo más importantes para colitis por C. difficile',a:'Antibióticos recientes (especialmente clindamicina, cefalosporinas, fluoroquinolonas), hospitalización, edad >65 años, IBP, inmunosupresión, enfermedad inflamatoria intestinal.'},
+    {q:'Primera línea para C. difficile moderado-grave según guías actuales',a:'Vancomicina oral 125 mg c/6h × 10 días o fidaxomicina 200 mg c/12h × 10 días. El metronidazol ya NO es primera línea para enfermedad no leve (guías IDSA 2021).'},
+    {q:'¿Cómo se diagnostica la colitis microscópica si la colonoscopia es normal?',a:'Biopsias múltiples de diferentes segmentos colónicos (incluyendo colon derecho). El diagnóstico es exclusivamente histológico. Colágena: banda de colágeno subepitelial >10 μm. Linfocítica: >20 LIE/100 células epiteliales.'}
+   ],
+   quiz:[
+    {q:'Hombre de 26 años con 2 años de diarrea con sangre, tenesmo y urgencia. Colonoscopia: inflamación continua desde recto hasta ángulo esplénico, mucosa granular con ulceraciones superficiales. Biopsia: infiltrado inflamatorio en mucosa, sin granulomas, distorsión criptal. ¿Diagnóstico y tratamiento inicial?',
+     opts:['Enfermedad de Crohn ileocolónico → budesonida oral','Colitis ulcerosa izquierda (E2) → mesalazina oral + supositorio rectal','Colitis por CMV → ganciclovir IV','Colitis isquémica → isquemia mesentérica'],
+     ans:1,fb:'CU tipo E2 (colitis izquierda): inflamación CONTINUA desde recto + solo mucosa + sin granulomas. Tratamiento de inducción: mesalazina tópica (enemas) + oral. La mesalazina rectal es más efectiva que la oral sola en enfermedad distal. Crohn tiene skip lesions, granulomas y afectación transmural.'},
+    {q:'Mujer de 32 años con diarrea crónica con sangre, fístula perianal y boca con aftas. Colonoscopia: lesiones discontinuas con ulceraciones profundas en íleon terminal y colon ascendente, mucosa normal en el resto. Biopsia: granulomas no caseosos. ¿Diagnóstico y hallazgo patognomónico?',
+     opts:['Colitis ulcerosa refractaria → anti-TNF','Enfermedad de Crohn ileocolónico → granulomas no caseosos en biopsia + skip lesions','Linfoma intestinal de células B → biopsia quirúrgica','Colitis por Yersinia → cultivo fecal'],
+     ans:1,fb:'Enfermedad de Crohn: distribución discontinua (skip lesions) + aftas orales + fístula perianal + compromiso ileal + granulomas no caseosos en biopsia. Los granulomas son el hallazgo histológico más específico de Crohn (aunque solo en 30-60% de biopsias).'},
+    {q:'Paciente hospitalizado con neumonía tratada con clindamicina + ceftriaxona durante 7 días. Al día 9 presenta diarrea acuosa de 6-8 deposiciones/día con aspecto verdoso. Leucocitos 22,000. Temperatura 38.9°C. ¿Diagnóstico y tratamiento?',
+     opts:['Diarrea iatrogénica por antibióticos → suspender antibióticos y observar','Colitis por C. difficile → vancomicina oral 125 mg c/6h × 10 días','Gastroenteritis bacteriana → ciprofloxacino','Colitis isquémica post-antibiótica → angiografía mesentérica'],
+     ans:1,fb:'C. difficile: diarrea post-antibiótica (especialmente clindamicina + cefalosporinas) + leucocitosis elevada + fiebre. Diagnóstico: toxina A/B en heces. Tratamiento: vancomicina oral (o fidaxomicina). El metronidazol solo se usa en enfermedad leve si hay limitaciones. No suspender antibióticos sin más, porque el riesgo vital requiere tratamiento específico.'},
+    {q:'Paciente con CU grave en brote (10 deposiciones/día con sangre, Hb 9 g/dL, leucocitos 16,000, albumina 2.8 g/dL). Recibe corticoides IV desde hace 5 días sin respuesta. ¿Cuál es el siguiente paso?',
+     opts:['Aumentar la dosis de corticoides IV','Terapia de rescate con infliximab IV o ciclosporina IV; si no responde en 3-5 días: colectomía','Mesalazina IV (no existe esta vía)','Alta con prednisona oral y seguimiento ambulatorio'],
+     ans:1,fb:'CU grave refractaria a corticoides IV por 5 días (colitis cortico-refractaria): terapia de rescate con infliximab IV (5 mg/kg) o ciclosporina IV (2-4 mg/kg). Si no hay respuesta en 3-5 días adicionales → colectomía de urgencia (evitar megacolon tóxico). La colectomía es curativa en CU.'},
+    {q:'Mujer de 68 años con 6 meses de diarrea acuosa de 5-6 deposiciones/día sin sangre. Colonoscopia: mucosa absolutamente normal, sin lesiones. Cultivos negativos. ¿Cuál es el diagnóstico y cómo se confirma?',
+     opts:['Síndrome de intestino irritable tipo diarrea → diagnóstico clínico','Colitis microscópica → biopsias de múltiples segmentos del colon (incluyendo colon derecho)','Enfermedad celiaca → biopsia duodenal y anticuerpos','Colitis por CMV → PCR en biopsia colónica'],
+     ans:1,fb:'Colitis microscópica: diarrea acuosa crónica voluminosa + colonoscopia NORMAL = biopsiar siempre. Es más frecuente en mujeres >50 años, asociada a AINEs, IBP y ISRS. El diagnóstico es SOLO histológico. El SII no causa diarrea nocturna ni de este volumen. La celiaca se diagnostica con anticuerpos y biopsia duodenal.'}
+   ]
+  },
+  {id:'vasc',title:'Isquemia intestinal, HCC y neoplasias gástricas',badge:'b-gi',badgeLabel:'Digestivo',meta:'~1.5 h · Caps. 85, 87, 337 · Harrison 22e',
+   resumen:[
+    'Isquemia mesentérica aguda (IMA): reducción brusca del flujo en la arteria mesentérica superior (AMS). Causas: émbolo (50%, origen cardiaco: FA), trombosis (25%), NOMI (no oclusiva, bajo gasto, 20%), trombosis venosa mesentérica (5%).',
+    'Clínica de IMA: dolor abdominal de inicio brusco, intenso, DESPROPORCIONADO a la exploración física (abdomen blando en fases iniciales porque el dolor es isquémico visceral, no peritoneal). Náusea, vómito, diarrea sanguinolenta tardía.',
+    'Parámetros de alarma en IMA: leucocitosis, lactato elevado (>2 mmol/L), acidosis metabólica. En fases tardías: defensa peritoneal (necrosis transmural). Mortalidad >50% si hay necrosis.',
+    'Diagnóstico de IMA: angioTC abdominal (gold standard) → defecto de relleno en AMS, neumatosis intestinal, gas en vena porta (signos de necrosis). Arteriografía si hay plan de revascularización percutánea.',
+    'Tratamiento de IMA: reanimación hídrica + anticoagulación (heparina) + revascularización (embolectomía, bypass o trombólisis intraarterial) + resección de segmento necrótico si hay necrosis. Cirugía urgente.',
+    'Colitis isquémica: isquemia del colon, generalmente no oclusiva. Afecta el "ángulo esplénico" (zona frontera entre AMS y AMI, punto de Griffith). Clínica: dolor en cuadrante inferior izquierdo + hematochezia leve. Curso autolimitado en 80%.',
+    'Hepatocarcinoma (HCC): tumor hepático primario más frecuente. Factores de riesgo: cirrosis (90% de los HCC), VHB crónica (incluso sin cirrosis), VHC, aflatoxina B1, alcohol, NASH.',
+    'Vigilancia de HCC: ecografía hepática + AFP cada 6 meses en pacientes de riesgo (cirrosis, VHB crónico). El objetivo es detectar tumores <2 cm donde el tratamiento es curativo.',
+    'Diagnóstico de HCC sin biopsia: nódulo ≥1 cm en cirrosis con realce arterial intenso + lavado en fase portal (wash-out) en TC o RM con gadolinio. Criterios LI-RADS 5 = HCC definitivo.',
+    'Sistema BCLC (Barcelona Clinic Liver Cancer): estadifica HCC en función del número de tumores, tamaño, función hepática (Child-Pugh) y performance status. Guía la decisión terapéutica (resección, ablación, TACE, sorafenib/lenvatinib, trasplante).',
+    'Cáncer gástrico: adenocarcinoma en 95% de casos. H. pylori es el carcinógeno tipo I más importante. FR adicionales: dieta rica en nitratos/ahumados, tabaquismo, gastrectomía previa, anemia perniciosa.',
+    'Clasificación de Lauren: tipo intestinal (bien diferenciado, antro, asociado a H. pylori y dieta, más frecuente en Asia) vs. tipo difuso (pobremente diferenciado, células en anillo de sello, linitis plástica, peor pronóstico).'
+   ],
+   flashcards:[
+    {q:'¿Cuál es la zona del colon más susceptible a la isquemia y por qué?',a:'Ángulo esplénico (punto de Griffith): zona frontera entre AMS (arteria cólica media) y AMI (arteria cólica izquierda), con escasa circulación colateral. También el recto-sigma (punto de Sudeck).'},
+    {q:'Criterios de imagen para diagnóstico de HCC sin biopsia en cirrosis',a:'Nódulo ≥1 cm + realce arterial intenso en fase arterial + lavado (wash-out) en fase portal o tardía en TC o RM. Si cumple ambos criterios en ≥1 técnica de imagen: HCC definitivo (no se necesita biopsia).'},
+    {q:'¿Cuál es la bacteria carcinógena tipo I para el estómago y qué tipo de cáncer produce principalmente?',a:'Helicobacter pylori: carcinógeno tipo I (IARC, 1994). Produce principalmente adenocarcinoma gástrico tipo intestinal (Lauren) a través de la cascada de Correa: gastritis crónica → atrofia → metaplasia → displasia → adenocarcinoma.'},
+    {q:'¿Qué es la linitis plástica y cuál es su pronóstico?',a:'Infiltración difusa de TODA la pared gástrica por adenocarcinoma difuso (células en anillo de sello). Estómago rígido en "cantimplora" en imagen. Irresecable en la mayoría. Supervivencia <1 año. Pronóstico muy malo.'},
+    {q:'¿Por qué el dolor de la isquemia mesentérica aguda es "desproporcionado a la exploración"?',a:'En fases iniciales el dolor es visceral (isquemia = aferentes viscerales): intenso pero sin irritación peritoneal (abdomen blando). El dolor parietal (defensa, rigidez) aparece TARDE, cuando hay necrosis transmural → peritonitis.'}
+   ],
+   quiz:[
+    {q:'Hombre de 72 años con FA crónica no anticoagulada. Dolor abdominal brusco e intenso de 3 horas. Abdomen blando, sin defensa. Leucocitos 24,000. Lactato 6.1 mmol/L. AngioTC: defecto de relleno en AMS proximal, asas intestinales con realce disminuido. ¿Diagnóstico y manejo?',
+     opts:['Pancreatitis aguda grave → soporte','Isquemia mesentérica aguda por émbolo → anticoagulación + revascularización urgente (embolectomía o trombólisis) + cirugía','Colitis isquémica → colonoscopia y observación','Obstrucción intestinal → descompresión nasogástrica'],
+     ans:1,fb:'IMA por émbolo (FA crónica): dolor desproporcionado + lactato elevado + defecto en AMS en angioTC. Manejo: heparina IV inmediata + evaluación quirúrgica urgente (embolectomía de AMS o trombólisis intraarterial) + resección de segmento necrótico si ya hay necrosis. Mortalidad alta si se retrasa.'},
+    {q:'Mujer de 65 años post-cirugía de aorta abdominal. Al día 2 presenta dolor en fosa iliaca izquierda + hematochezia moderada. Colonoscopia de urgencia: mucosa eritematosa y hemorrágica en ángulo esplénico y colon descendente, recto normal. ¿Diagnóstico?',
+     opts:['Colitis ulcerosa de inicio agudo','Colitis isquémica del ángulo esplénico (zona frontera AMS-AMI)','Cáncer de colon perforado','Diverticulitis aguda con hemorragia'],
+     ans:1,fb:'Colitis isquémica: clásicamente post-cirugía aórtica (ligadura de AMI) o en pacientes con bajo gasto. Afecta preferentemente el ángulo esplénico (zona más vulnerable). El recto suele estar respetado (arteria rectal superior de AMI + arterias rectales medias/inferiores de iliacas). Tratamiento: soporte, hidratación, observación (80% autolimitada).'},
+    {q:'Cirrótico de 61 años (VHC, Child-Pugh B7). Eco de vigilancia: nódulo nuevo de 1.8 cm en segmento VIII, hipoecogénico. AFP 220 ng/mL. TC dinámico: realce arterial intenso + wash-out en fase portal. ¿Cuál es el diagnóstico y el siguiente paso?',
+     opts:['Colangiocarcinom → biopsia urgente','HCC (criterios radiológicos suficientes) → estadificar con BCLC y definir tratamiento','Hemangioma hepático gigante → RM para confirmar','Metástasis hepática → buscar tumor primario'],
+     ans:1,fb:'HCC confirmado por criterios radiológicos (>1 cm + realce arterial + wash-out en cirrosis) → NO se necesita biopsia (riesgo de siembra tumoral). El hemangioma tiene realce periférico nodular centrípeto, no wash-out. Siguiente paso: estadificación BCLC para decidir tratamiento: ablación por radiofrecuencia, resección o TACE según función hepática.'},
+    {q:'Hombre de 55 años con pérdida de peso de 12 kg en 4 meses, saciedad precoz y anemia ferropénica. Endoscopia: mucosa gástrica rígida, no distensible con el insuflado, sin úlcera visible. Biopsia: células en anillo de sello difusas en la submucosa. ¿Diagnóstico y pronóstico?',
+     opts:['Gastritis atrófica severa → triple erradicación de H. pylori','Linitis plástica (adenocarcinoma gástrico difuso) → pronóstico muy desfavorable, frecuentemente irresecable','Linfoma MALT gástrico → erradicación de H. pylori','Enfermedad de Ménétrier → tratamiento con cetuximab'],
+     ans:1,fb:'Linitis plástica: infiltración difusa de la pared por células en anillo de sello → estómago rígido en "cantimplora". La endoscopia puede ser engañosamente "normal" (mucosa intacta pero submucosa infiltrada). Pronóstico muy malo: la mayoría irresecables al diagnóstico. Supervivencia media <12 meses.'},
+    {q:'Mujer de 48 años con infección activa por H. pylori documentada y diagnóstico de linfoma MALT gástrico de bajo grado (estadio IE). ¿Cuál es el tratamiento de primera línea?',
+     opts:['Quimioterapia con CHOP inmediata','Erradicación de H. pylori (triple o cuádruple terapia) → regresión del linfoma en 70-80%','Gastrectomía total + quimioterapia adyuvante','Radioterapia gástrica exclusiva'],
+     ans:1,fb:'Linfoma MALT gástrico de bajo grado estadio IE: el 95% está asociado a H. pylori. La erradicación de H. pylori produce regresión completa del linfoma en 70-80% de casos (el antígeno bacteriano estimula el clon B neoplásico). Es el único linfoma donde una infección bacteriana es suficiente como tratamiento de primera línea. Seguimiento endoscópico estricto.'}
+   ]
+  }
+ ]
+];
+
+let currentDay=0,openTopic=null,topicModes={},fcIndex={},fcFlipped={},quizAnswered={},completed={},flashSeen=0;
+function allTopics(){return DAYS.flat();}
+function switchDay(d){currentDay=d;openTopic=null;document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',i===d));document.getElementById('day-label').textContent=d===0?'Día 1 · Endocrino (mañana) · Cardio (tarde)':'Día 2 · Nefro (mañana) · Digestivo (tarde)';render();}
+function updateGlobal(){const total=allTopics().length;const done=Object.keys(completed).length;const pct=Math.round(done/total*100);document.getElementById('pct').textContent=pct+'%';document.getElementById('prog-label').textContent=done+' de '+total+' temas completados';const hLeft=Math.max(0,Math.round((16-done*(16/total))*10)/10);document.getElementById('hrs-left').textContent=hLeft+' h restantes';document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('s-done').textContent=done;document.getElementById('s-total').textContent=total;document.getElementById('s-flash').textContent=flashSeen;document.getElementById('pips').innerHTML=allTopics().map(t=>'<div class="pip'+(completed[t.id]?' done':'')+'" title="'+t.title+'"></div>').join('');}
+function render(){const topics=DAYS[currentDay];const c=document.getElementById('topics-container');c.innerHTML='';topics.forEach(topic=>{const isOpen=openTopic===topic.id;const isDone=!!completed[topic.id];const mode=topicModes[topic.id]||'resumen';const fi=fcIndex[topic.id]||0;const flipped=!!fcFlipped[topic.id];const qa=quizAnswered[topic.id]||{};const card=document.createElement('div');card.className='topic-card'+(isOpen?' is-open':'');let bodyHtml='';if(isOpen){const mR=mode==='resumen'?'active':'';const mF=mode==='flash'?'active':'';const mQ=mode==='quiz'?'active':'';let rHtml='<div class="content-panel '+mR+'"><div class="resumen"><ol>';topic.resumen.forEach(r=>{rHtml+='<li>'+r+'</li>';});rHtml+='</ol></div></div>';const fc=topic.flashcards[fi];let fHtml='<div class="content-panel '+mF+'">';fHtml+='<div class="fc-wrap"><div class="fc'+(flipped?' flipped':'')+'" id="fc-'+topic.id+'" onclick="flipCard(\''+topic.id+'\')">';fHtml+='<div class="fc-face fc-front">'+fc.q+'</div>';fHtml+='<div class="fc-face fc-back">'+fc.a+'</div>';fHtml+='</div></div>';fHtml+='<div class="fc-tap-hint"><i class="ti ti-hand-click" style="font-size:14px;vertical-align:-2px"></i> Toca la tarjeta para ver la respuesta</div>';fHtml+='<div class="fc-nav"><button class="nav-btn" onclick="fcNav(\''+topic.id+'\',-1)"><i class="ti ti-arrow-left"></i> Anterior</button><span class="fc-counter">'+(fi+1)+' / '+topic.flashcards.length+'</span><button class="nav-btn" onclick="fcNav(\''+topic.id+'\',1)">Siguiente <i class="ti ti-arrow-right"></i></button></div></div>';const correctCount=topic.quiz.filter((q,i)=>qa[i]===q.ans).length;const answeredCount=Object.keys(qa).length;let qHtml='<div class="content-panel '+mQ+'">';if(answeredCount>0){qHtml+='<div class="quiz-score">'+correctCount+'/'+answeredCount+' correctas</div>';}topic.quiz.forEach((q,qi)=>{const ans=qa[qi];qHtml+='<div class="quiz-item"><div class="quiz-q">'+(qi+1)+'. '+q.q+'</div><div class="quiz-opts">';q.opts.forEach((o,oi)=>{let cls='quiz-opt';if(ans!==undefined){if(oi===q.ans)cls+=' correct';else if(oi===ans&&oi!==q.ans)cls+=' wrong';}const dis=ans!==undefined?'disabled':'';qHtml+='<button class="'+cls+'" '+dis+' onclick="answerQuiz(\''+topic.id+'\','+qi+','+oi+')">'+String.fromCharCode(65+oi)+'. '+o+'</button>';});qHtml+='</div><div class="quiz-feedback'+(ans!==undefined?' show':'')+'"><strong>Explicación:</strong> '+q.fb+'</div></div>';});qHtml+='</div>';bodyHtml='<div class="topic-body open"><div class="mode-tabs"><button class="mode-btn '+mR+'" onclick="setMode(\''+topic.id+'\',\'resumen\')"><i class="ti ti-notes"></i> Resumen</button><button class="mode-btn '+mF+'" onclick="setMode(\''+topic.id+'\',\'flash\')"><i class="ti ti-cards"></i> Flashcards</button><button class="mode-btn '+mQ+'" onclick="setMode(\''+topic.id+'\',\'quiz\')"><i class="ti ti-list-check"></i> Quiz ENARM</button></div>'+rHtml+fHtml+qHtml+'</div>';}card.innerHTML='<div class="topic-header" onclick="toggleTopic(\''+topic.id+'\')"><button class="check-btn'+(isDone?' done':'')+'" onclick="event.stopPropagation();toggleDone(\''+topic.id+'\')" aria-label="Marcar como completado">'+(isDone?'<i class="ti ti-check"></i>':'')+'</button><div class="topic-info"><div class="topic-title">'+topic.title+'</div><div class="topic-meta">'+topic.meta+'</div></div><span class="topic-badge '+topic.badge+'">'+topic.badgeLabel+'</span><i class="ti ti-chevron-down topic-chevron"></i></div>'+bodyHtml;c.appendChild(card);});updateGlobal();}
+function toggleTopic(id){openTopic=openTopic===id?null:id;if(openTopic&&!topicModes[id])topicModes[id]='resumen';render();}
+function toggleDone(id){if(completed[id])delete completed[id];else completed[id]=true;render();}
+function setMode(id,mode){topicModes[id]=mode;fcFlipped[id]=false;render();}
+function flipCard(id){fcFlipped[id]=!fcFlipped[id];if(fcFlipped[id])flashSeen++;const el=document.getElementById('fc-'+id);if(el)el.classList.toggle('flipped',fcFlipped[id]);updateGlobal();}
+function fcNav(id,dir){const topic=allTopics().find(t=>t.id===id);const curr=fcIndex[id]||0;fcIndex[id]=(curr+dir+topic.flashcards.length)%topic.flashcards.length;fcFlipped[id]=false;render();}
+function answerQuiz(topicId,qi,oi){if(!quizAnswered[topicId])quizAnswered[topicId]={};if(quizAnswered[topicId][qi]!==undefined)return;quizAnswered[topicId][qi]=oi;const topic=allTopics().find(t=>t.id===topicId);const allRight=topic.quiz.every((q,i)=>quizAnswered[topicId][i]===q.ans);if(allRight)completed[topicId]=true;render();}
+render();
+</script>
+</body>
+</html>
