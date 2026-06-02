@@ -104,14 +104,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
   <div class="progress-wrap">
     <div class="progress-header">
-      <span id="prog-label">0 de 10 temas completados</span>
+      <span id="prog-label">0 de 12 temas completados</span>
       <span id="hrs-left">16 h restantes</span>
     </div>
     <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
   <div class="stats-row">
     <div class="stat-card"><div class="val" id="s-done">0</div><div class="lbl">Completados</div></div>
-    <div class="stat-card"><div class="val" id="s-total">10</div><div class="lbl">Total temas</div></div>
+    <div class="stat-card"><div class="val" id="s-total">12</div><div class="lbl">Total temas</div></div>
     <div class="stat-card"><div class="val" id="s-flash">0</div><div class="lbl">Flashcards vistas</div></div>
   </div>
   <div class="day-tabs">
@@ -246,6 +246,86 @@ const DAYS = [
     {q:'Paciente con sospecha de síndrome de Cushing. Test de supresión con 1 mg de dexametasona nocturna: cortisol matutino = 4.2 μg/dL. ¿Cómo interpretas este resultado y qué sigue?',
      opts:['Resultado normal (Cushing descartado), no se necesita más estudio','Resultado positivo (no supresión), confirmar con cortisol libre urinario 24h ×2 o test de 2 días con 2 mg','Resultado indeterminado, repetir con 2 mg de dexametasona la misma noche','Proceder directamente a RM hipofisaria'],
      ans:1,fb:'Corte: <1.8 μg/dL = supresión normal (Cushing improbable). ≥1.8 μg/dL = no supresión = resultado positivo de tamizaje. Se requiere confirmación con una segunda prueba (cortisol urinario ×2 o test de 2 días) antes de estudios de localización (ACTH, RM).'}
+   ]
+  },
+  {id:'hyperadreno',title:'Hiperadrenocorticismo (síndrome de Cushing)',badge:'b-endo',badgeLabel:'Endocrino',meta:'~1.5 h · Cap. 396 · Harrison 22e',
+   resumen:[
+    'El síndrome de Cushing es el conjunto de manifestaciones clínicas derivadas de la exposición crónica a glucocorticoides en exceso, ya sea exógena o endógena.',
+    'Causa más frecuente GLOBAL: administración exógena de corticosteroides (iatrogénica). Es siempre el primer diagnóstico a descartar antes de estudiar causa endógena.',
+    'Causas endógenas dependientes de ACTH (80%): adenoma hipofisario ACTH-secretor "Enfermedad de Cushing" (70%) y síndrome de ACTH ectópica (carcinoma de células pequeñas de pulmón, carcinoma medular de tiroides, tumores carcinoides, 10%).',
+    'Causas endógenas independientes de ACTH (20%): adenoma suprarrenal productor de cortisol (unilateral), carcinoma suprarrenal (raro, produce andrógenos también), hiperplasia suprarrenal macronodular bilateral.',
+    'Clínica característica: obesidad central con extremidades delgadas (miopatía), cara de luna llena, joroba de búfalo (lipodosis supraclavicular y dorsocervical), estrías violáceas anchas (>1 cm en abdomen y muslos), pletora facial, equimosis fácil.',
+    'Manifestaciones metabólicas y sistémicas: HTA, DM2 (resistencia a insulina), osteoporosis (fracturas vertebrales), infecciones oportunistas (por inmunosupresión), dislipidemia, hipercoagulabilidad (TVP/TEP), trastornos psiquiátricos (depresión, psicosis).',
+    'Tamizaje bioquímico (se deben realizar ≥2 pruebas): (1) cortisol libre urinario en 24h ×2 (>3× VN = muy sugestivo), (2) cortisol salival nocturno ×2 (alta sensibilidad), (3) test de supresión nocturna con 1 mg de dexametasona (cortisol matutino ≥1.8 μg/dL = positivo).',
+    'Confirmación y localización: ACTH plasmática a las 8 am. Si ACTH suprimida (<5 pg/mL) → causa suprarrenal autónoma → TC suprarrenal. Si ACTH normal-elevada → causa dependiente de ACTH → RM hipofisaria. Si RM negativa → cateterismo de senos petrosos inferiores.',
+    'Síndrome de ACTH ectópica: inicio más abrupto, ACTH muy elevada (>200 pg/mL), hipopotasemia marcada (el exceso de cortisol activa receptores mineralocorticoides), alcalosis metabólica, hiperpigmentación, poca obesidad (por caquexia tumoral).',
+    'Carcinoma suprarrenal: produce cortisol + andrógenos → Cushing + virilización en mujeres. Masa suprarrenal grande (>6 cm), heterogénea, invasiva. Pronóstico muy malo. Tratamiento: adrenalectomía + mitotane.',
+    'Tratamiento definitivo de Enfermedad de Cushing: cirugía transesfenoidal (remisión en 70-80% de microadenomas). Si falla: radioterapia hipofisaria, adrenalectomía bilateral (precaución: síndrome de Nelson), ketoconazol/metirapona como puente.',
+    'Síndrome de Nelson: crecimiento agresivo del adenoma hipofisario residual tras adrenalectomía bilateral (sin retroalimentación negativa del cortisol). Hiperpigmentación severa + déficits neurológicos. Prevención: radioterapia hipofisaria previa a adrenalectomía.'
+   ],
+   flashcards:[
+    {q:'¿Cuál es la causa más frecuente de síndrome de Cushing en la práctica clínica?',a:'Administración exógena de corticosteroides (iatrogénica). Siempre descartarla primero. Entre las causas ENDÓGENAS, la más frecuente es la Enfermedad de Cushing (adenoma hipofisario ACTH-secretor, 70%).'},
+    {q:'¿Cómo diferencias bioquímicamente la Enfermedad de Cushing del síndrome de ACTH ectópica?',a:'Enfermedad de Cushing: ACTH moderadamente elevada (20-200 pg/mL), supresión con dexametasona a dosis altas (2 mg c/6h × 2 días), RM hipofisaria positiva en 60%. ACTH ectópica: ACTH muy elevada (>200 pg/mL), NO suprime con dosis altas, hipopotasemia marcada.'},
+    {q:'¿Qué es el síndrome de Nelson y cómo se previene?',a:'Crecimiento agresivo del adenoma hipofisario corticotrófico residual tras adrenalectomía bilateral (sin retroalimentación negativa del cortisol). Se previene con radioterapia hipofisaria antes de adrenalectomía.'},
+    {q:'Diferencia clínica entre estrías del Cushing y estrías del embarazo/obesidad',a:'Cushing: estrías VIOLÁCEAS (color rojo-vinoso), anchas (>1 cm), abdomen y raíz de muslos. Embarazo/obesidad: estrías rosadas o blancas nacaradas, menos anchas. El color violáceo intenso es altamente sugestivo de Cushing.'},
+    {q:'¿Cuál es el test de localización cuando la RM hipofisaria es NEGATIVA en Cushing ACTH-dependiente?',a:'Cateterismo bilateral de senos petrosos inferiores (CSPI): se mide ACTH en sangre venosa petrosa vs. periférica. Gradiente central/periférico >2 basal o >3 tras CRH = origen hipofisario. Sin gradiente = ACTH ectópica.'}
+   ],
+   quiz:[
+    {q:'Mujer de 38 años con HTA, DM2 de inicio reciente, aumento de 18 kg en 8 meses (obesidad central), estrías violáceas de 2 cm en abdomen y equimosis espontáneas. Cortisol salival nocturno elevado ×2. ACTH plasmática = 95 pg/mL. RM hipofisaria: microadenoma de 6 mm. ¿Diagnóstico?',
+     opts:['Síndrome de ACTH ectópica por tumor carcinoide','Adenoma suprarrenal productor de cortisol','Enfermedad de Cushing (adenoma hipofisario ACTH-secretor)','Cushing iatrogénico por corticoides exógenos'],
+     ans:2,fb:'Enfermedad de Cushing: ACTH moderadamente elevada (dependiente de ACTH) + RM con microadenoma hipofisario + clínica florida de hipercortisolismo. El adenoma suprarrenal tendría ACTH suprimida (<5 pg/mL). El Cushing iatrogénico tendría ACTH suprimida y antecedente de uso de esteroides.'},
+    {q:'Hombre de 55 años con pérdida de peso de 8 kg en 6 semanas, hiperpigmentación, HTA severa, K+ 2.6 mEq/L, alcalosis metabólica. ACTH = 450 pg/mL. Cortisol urinario 24h = 2800 μg. TC tórax: masa hiliar derecha de 3 cm. ¿Diagnóstico más probable?',
+     opts:['Enfermedad de Cushing grave','Síndrome de ACTH ectópica por carcinoma de células pequeñas de pulmón','Adenoma suprarrenal bilateral','Carcinoma suprarrenal con metástasis pulmonar'],
+     ans:1,fb:'ACTH ectópica: inicio abrupto + caquexia (por tumor) + ACTH muy elevada (>200 pg/mL) + hipopotasemia severa (el cortisol en exceso activa receptores mineralocorticoides → pérdida de K+) + alcalosis + masa pulmonar. La Enfermedad de Cushing rara vez causa hipopotasemia tan marcada.'},
+    {q:'Paciente con Enfermedad de Cushing por microadenoma hipofisario. Se realizó cirugía transesfenoidal y al día 3 posoperatorio cortisol = 1.2 μg/dL. ¿Qué indica este resultado y cuál es el manejo?',
+     opts:['Fracaso de la cirugía → reoperar de inmediato','Remisión bioquímica (supresión del cortisol) → hidrocortisona de reemplazo temporal hasta recuperar el eje suprarrenal','Resultado normal esperado → no requiere manejo','Síndrome de Nelson incipiente → radioterapia inmediata'],
+     ans:1,fb:'Cortisol posoperatorio <2 μg/dL = remisión bioquímica (el hipotálamo-hipófisis normal estaba suprimido por el exceso crónico de cortisol y necesita tiempo para recuperarse). Se debe iniciar hidrocortisona de reemplazo (15-25 mg/día) para evitar insuficiencia suprarrenal grave. La recuperación del eje puede tardar 6-24 meses.'},
+    {q:'Mujer con sospecha de Cushing. Test de supresión con 1 mg dexametasona nocturna: cortisol matutino = 5.8 μg/dL. Cortisol libre urinario 24h = 210 μg (VN <90). ACTH = 3 pg/mL (suprimida). TC suprarrenal: nódulo derecho de 2.8 cm hipervascular. ¿Diagnóstico?',
+     opts:['Enfermedad de Cushing con falso negativo en RM','Síndrome de ACTH ectópica oculta','Adenoma suprarrenal productor de cortisol (Cushing independiente de ACTH)','Hipercortisolismo por obesidad (pseudo-Cushing)'],
+     ans:2,fb:'ACTH suprimida (<5 pg/mL) + hipercortisolismo bioquímico + nódulo suprarrenal unilateral = adenoma suprarrenal autónomo. El adenoma produce cortisol de forma autónoma, suprimiendo la ACTH hipofisaria. Tratamiento: adrenalectomía laparoscópica unilateral + hidrocortisona posoperatoria (el eje contralateral estaba suprimido).'},
+    {q:'Paciente con Cushing grave tratado con adrenalectomía bilateral. A los 18 meses desarrolla hiperpigmentación severa, cefalea y deterioro visual. RM: masa selar de 3 cm con extensión supraselar. ¿Diagnóstico?',
+     opts:['Metástasis hipofisaria','Síndrome de Nelson por adenoma corticotrófico agresivo post-adrenalectomía bilateral','Craneofaringioma de aparición tardía','Recidiva de Cushing por remanente suprarrenal'],
+     ans:1,fb:'Síndrome de Nelson: tras adrenalectomía bilateral, el adenoma hipofisario corticotrófico residual crece agresivamente al perder la retroalimentación negativa del cortisol → masa invasiva + hiperpigmentación extrema (ACTH muy elevada). Tratamiento: cirugía hipofisaria + radioterapia. Se previene con radioterapia hipofisaria antes de la adrenalectomía.'}
+   ]
+  },
+  {id:'hipoaldo',title:'Hipoaldosteronismo',badge:'b-endo',badgeLabel:'Endocrino',meta:'~1 h · Cap. 395 · Harrison 22e',
+   resumen:[
+    'El hipoaldosteronismo es la deficiencia de aldosterona o resistencia a su acción, resultando en pérdida de sodio, retención de potasio y acidosis metabólica hiperclorémica.',
+    'Clasificación: (1) Hipoaldosteronismo primario: falla de la glándula suprarrenal para producir aldosterona. (2) Hipoaldosteronismo hiporreninémico (tipo IV de acidosis tubular renal): renina baja → aldosterona baja. (3) Pseudohipoaldosteronismo: resistencia tubular a la aldosterona.',
+    'Hipoaldosteronismo hiporreninémico (HH): la causa más frecuente de hipoaldosteronismo en la práctica clínica. Ocurre en pacientes con nefropatía diabética, nefritis intersticial crónica o uso de AINEs y β-bloqueadores. La renina baja reduce la producción de angiotensina II → aldosterona baja.',
+    'Presentación clínica del HH: hiperkalemia desproporcionada al grado de insuficiencia renal + acidosis metabólica hiperclorémica (anion gap normal, pH <7.35, HCO3 bajo) + normonatremia o hiponatremia leve. Sin hipotensión ortostática marcada (porque el cortisol está intacto).',
+    'Diagnóstico diferencial de hiperkalemia con acidosis metabólica: HH (renina baja + aldosterona baja) vs. Addison (ACTH elevada + cortisol bajo + hiperpigmentación) vs. pseudohipoaldosteronismo (renina y aldosterona altas, resistencia tubular).',
+    'Nefropatía diabética como causa de HH: el daño del aparato yuxtaglomerular reduce la secreción de renina → eje SRAA suprimido. Muy frecuente en DM2 con TFG 30-60 mL/min.',
+    'Fármacos que causan o agravan hipoaldosteronismo: IECA/ARA-II (bloquean angiotensina II → reducen aldosterona), heparina (inhibe la síntesis suprarrenal de aldosterona), ketoconazol, espironolactona/eplerenona (antagonistas de receptor), AINEs (reducen renina), β-bloqueadores (reducen renina).',
+    'Pseudohipoaldosteronismo tipo 1 (PHA1): resistencia a la aldosterona por mutación en el receptor mineralocorticoide o en los canales ENaC. Renina y aldosterona muy elevadas (compensación). Clínica severa en neonatos: hiponatremia, hiperkalemia, acidosis, deshidratación, shock.',
+    'Tratamiento del HH: restricción dietética de potasio + diuréticos que promuevan excreción de K+ (furosemida, tiazidas) + tratar la causa subyacente. En algunos casos, fludrocortisona (mineralocorticoide sintético) a dosis bajas si hay hiperkalemia refractaria.',
+    'Hipoaldosteronismo en contexto postoperatorio: adrenalectomía por adenoma de Conn → la glándula contralateral estaba suprimida por retroalimentación → hipoaldosteronismo transitorio posoperatorio. Tratar con fludrocortisona temporalmente.',
+    'Acidosis tubular renal tipo IV (ATR-IV): es la presentación bioquímica del HH. Anion gap normal + hiperkalemia + bicarbonato bajo. La hiperkalemia de la ATR-IV inhibe la amoniagenesis renal → acumula H+. A diferencia de ATR tipos I y II, el pH urinario puede ser <5.5.',
+    'Gravedad de la hiperkalemia en HH: generalmente moderada (K+ 5.5-6.5 mEq/L), rara vez >7 mEq/L a menos que haya desencadenante agudo (infección, ayuno, fármacos). Monitoreo electrocardiográfico si K+ >6 mEq/L: ondas T picudas, ensanchamiento QRS, fibrilación ventricular.'
+   ],
+   flashcards:[
+    {q:'¿Cuál es la causa más frecuente de hipoaldosteronismo en la práctica clínica y en qué contexto ocurre?',a:'Hipoaldosteronismo hiporreninémico (HH): daño del aparato yuxtaglomerular (nefropatía diabética, nefritis intersticial) → renina baja → angiotensina II baja → aldosterona baja. Se presenta como ATR tipo IV.'},
+    {q:'Tríada bioquímica del hipoaldosteronismo hiporreninémico',a:'(1) Hiperkalemia desproporcionada al grado de IRC, (2) Acidosis metabólica hiperclorémica (anion gap normal, ATR tipo IV), (3) Renina plasmática baja + aldosterona baja (diferencia del Addison donde ACTH está elevada).'},
+    {q:'¿Cómo diferencias HH de pseudohipoaldosteronismo en laboratorio?',a:'HH: renina BAJA + aldosterona BAJA (déficit de producción). Pseudohipoaldosteronismo: renina ALTA + aldosterona MUY ALTA (resistencia tubular → compensación suprarrenal). Ambos cursan con hiperkalemia y acidosis.'},
+    {q:'Tres fármacos de uso común que pueden causar o agravar hipoaldosteronismo',a:'(1) IECA/ARA-II (bloquean angiotensina II → reducen síntesis de aldosterona), (2) Heparina (inhibe la síntesis suprarrenal de aldosterona directamente), (3) AINEs (reducen la síntesis de prostaglandinas que estimulan la renina).'},
+    {q:'Tratamiento del hipoaldosteronismo hiporreninémico con hiperkalemia sintomática',a:'Restricción de K+ en dieta + suspender fármacos que elevan K+ (IECA, ARA-II, heparina) + furosemida (promueve excreción de K+ y Na+). Si refractario: fludrocortisona 0.05-0.1 mg/día (monitorizar HTA y edema).'}
+   ],
+   quiz:[
+    {q:'Diabético tipo 2 de 62 años con nefropatía (TFG 38 mL/min, creatinina 2.1). Laboratorio rutinario: K+ 6.2 mEq/L, HCO3 18 mEq/L, Na+ 138, cloro 112 mEq/L, pH 7.29. Sin síntomas. Aldosterona baja, actividad de renina plasmática (ARP) baja. ¿Diagnóstico?',
+     opts:['Insuficiencia renal aguda con acidosis urémca','Hipoaldosteronismo hiporreninémico (ATR tipo IV) por nefropatía diabética','Enfermedad de Addison con IRC concomitante','Pseudohipoaldosteronismo tipo 1'],
+     ans:1,fb:'HH: diabético con nefropatía leve-moderada + hiperkalemia DESPROPORCIONADA al grado de IRC (TFG 38 no explicaría K+ 6.2 solo) + acidosis hiperclorémica (anion gap = 138-(112+18) = 8, normal) + renina y aldosterona bajas. El Addison tiene ACTH elevada, cortisol bajo e hiperpigmentación. El pseudohipoaldosteronismo tiene aldosterona y renina muy altas.'},
+    {q:'Mujer de 45 años con LES en tratamiento con AINEs crónicos y candesartán. Control: K+ 6.5 mEq/L, HCO3 17 mEq/L, pH 7.27. ECG: ondas T picudas en derivaciones precordiales. TFG 55 mL/min. ¿Cuál es la intervención más prioritaria?',
+     opts:['Iniciar fludrocortisona inmediatamente','Suspender AINEs y ARA-II + gluconato de calcio IV si hay cambios ECG significativos + kayexalate o patiromer','Diálisis de urgencia','Solo restricción dietética de K+ y observación'],
+     ans:1,fb:'Hiperkalemia sintomática con cambios ECG por fármacos (AINEs reducen renina + ARA-II bloquean angiotensina II → ambos reducen aldosterona). Manejo urgente: si hay cambios ECG → gluconato de calcio IV (estabiliza membrana), luego suspender fármacos causales, resinas de intercambio (patiromer, SPS), diuréticos. La diálisis es para hiperkalemia refractaria.'},
+    {q:'Neonato de 5 días con vómito, deshidratación severa, hiponatremia (Na+ 118), hiperkalemia (K+ 7.8), acidosis metabólica. Aldosterona muy elevada (800 pg/mL), renina muy elevada. Cortisol normal. ¿Diagnóstico?',
+     opts:['Insuficiencia suprarrenal primaria (Addison neonatal)','Pseudohipoaldosteronismo tipo 1 (resistencia a aldosterona)','Hiperplasia suprarrenal congénita por déficit de 21-hidroxilasa','Hipoaldosteronismo hiporreninémico neonatal'],
+     ans:1,fb:'Pseudohipoaldosteronismo tipo 1: aldosterona y renina MUY ALTAS (compensación máxima) pero el riñón no responde (mutación en receptor mineralocorticoide o canal ENaC). A diferencia de la hiperplasia suprarrenal congénita, el cortisol es normal. El HH tendría aldosterona y renina bajas. Tratamiento: suplementación de sodio + resinas de intercambio.'},
+    {q:'Paciente sometido a adrenalectomía laparoscópica izquierda por adenoma de Conn confirmado. A los 3 días posoperatorios: K+ 5.8 mEq/L, HCO3 19 mEq/L. Sin fludrocortisona. PA 130/85 mmHg. ¿Explicación y manejo?',
+     opts:['Hiperaldosteronismo persistente por hiperplasia contralateral → reintervención','Hipoaldosteronismo posoperatorio transitorio (glándula contralateral suprimida) → fludrocortisona temporal + monitoreo de K+','Insuficiencia suprarrenal total → hidrocortisona IV urgente','Resultado esperado, no requiere tratamiento'],
+     ans:1,fb:'Tras adrenalectomía por adenoma de Conn, la glándula suprarrenal contralateral estaba suprimida crónicamente por el exceso de aldosterona → hipoaldosteronismo transitorio posoperatorio (semanas a meses). Tratamiento: fludrocortisona 0.1 mg/día + dieta rica en sodio hasta que el eje se recupere. El cortisol está intacto (solo aldosterona afectada).'},
+    {q:'Hombre de 70 años con ICC en tratamiento con enalapril, espironolactona y furosemida. Control mensual: K+ 6.8 mEq/L, HCO3 16 mEq/L. ECG urgente: ondas T picudas V2-V4, PR prolongado. ¿Mecanismo y manejo inmediato?',
+     opts:['Insuficiencia renal aguda por hipoperfusión → expansión de volumen','Hipoaldosteronismo farmacológico (IECA + espironolactona) con hiperkalemia grave con cambios ECG → gluconato de calcio IV + suspender espironolactona + considerar kayexalate o diálisis','Hiperkalemia por dieta → solo restricción de K+','Pseudohipoaldosteronismo tipo 2 → tiazidas'],
+     ans:1,fb:'Combinación IECA + espironolactona es una causa clásica de hiperkalemia grave en ICC (ambos bloquean el eje aldosterónico). Con cambios ECG: gluconato de calcio IV 10 mL al 10% (estabiliza membrana cardiaca en 2-3 min), luego insulin+glucosa (traslada K+ al intracelular), suspender espironolactona y revisar IECA. La furosemida en este contexto puede estar ayudando (excreta K+).'}
    ]
   },
   {id:'gonadas',title:'Gónadas: hipogonadismo, ginecomastia y disfunción eréctil',badge:'b-endo',badgeLabel:'Endocrino',meta:'~0.5 h · Cap. 400 · Harrison 22e',
